@@ -1,0 +1,45 @@
+Package: ProgesteromicsR
+Title: A Comprehensive Shiny App for RNA-Seq Analysis of breast cancer cell line data
+Version: 0.2.0
+Authors@R: person("Alpay", "Temiz", email = "temizna@umn.edu", role = c("aut", "cre"))
+Description: 
+    ProgestromicsR provides an interactive Shiny interface for complete RNA-Seq analysis of 
+     over 200 breast cancer cell line data, including
+     normalization, quality control, differential expression,
+    gene expression visualization, pathway analysis, and GSEA using CRAN and Bioconductor tools.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
+Depends:
+    R (>= 4.1.0)
+Imports:
+    shiny,
+    gridExtra,
+    shinythemes,
+    ggplot2,
+    DT,
+    tidyr,
+    tidyselect,
+    BiocManager,
+    VennDiagram,
+    dplyr,
+    stringr,
+    RColorBrewer,
+    DESeq2,
+    clusterProfiler,
+    enrichplot,
+    ComplexHeatmap,
+    msigdbr,
+    ReactomePA,
+    pathfindR,
+    ggrepel,
+    circlize,
+    AnnotationDbi,
+    org.Mm.eg.db,
+    org.Hs.eg.db,
+    vroom,
+    gson,
+Suggests:
+    testthat,
+Roxygen: list(markdown = TRUE)
