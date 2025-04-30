@@ -108,45 +108,6 @@ mod_tf_enrichment_analysis <- function(input, output, session, geneList_rv, tf_e
         }
       )
       
-      # output$tf_treeplot <- renderPlot({
-      #   enrichplot::treeplot(tf_result) + theme(axis.text.y = element_text(size = 6, face = "bold"))
-      # })
-      # 
-      # output$download_tf_treeplot <- downloadHandler(
-      #   filename = function() paste0("TF_Enrichment_", input$tf_data_source, "_treeplot.pdf"),
-      #   content = function(file) {
-      #     pdf(file)
-      #     print(enrichplot::treeplot(tf_result) + theme(axis.text.y = element_text(size = 6, face = "bold")))
-      #     dev.off()
-      #   }
-      # )
-      # 
-      # output$tf_heatmap <- renderPlot({
-      #   enrichplot::heatplot(tf_result, foldChange = geneList_rv(), showCategory = 10)
-      # })
-      # 
-      # output$download_tf_heatmap <- downloadHandler(
-      #   filename = function() paste0("TF_Enrichment_", input$tf_data_source, "_heatmap.pdf"),
-      #   content = function(file) {
-      #     pdf(file)
-      #     print(enrichplot::heatplot(tf_result, foldChange = geneList_rv(), showCategory = 10))
-      #     dev.off()
-      #   }
-      # )
-      # 
-      # output$tf_upsetplot <- renderPlot({
-      #   enrichplot::upsetplot(tf_result) + theme(axis.text.y = element_text(size = 6, face = "bold"))
-      # })
-      # 
-      # output$download_tf_upsetplot <- downloadHandler(
-      #   filename = function() paste0("TF_Enrichment_", input$tf_data_source, "_upsetplot.pdf"),
-      #   content = function(file) {
-      #     pdf(file)
-      #     print(enrichplot::upsetplot(tf_result) + theme(axis.text.y = element_text(size = 6, face = "bold")))
-      #     dev.off()
-      #   }
-      # )
-      
       output$tf_results_table <- renderDT({
         as.data.frame(tf_result@result)
       })

@@ -46,7 +46,11 @@ mod_differential_expression <- function(input, output, session, filtered_data_rv
   observeEvent(input$run_de, {
     req(input$metadata_column, input$reference_condition, input$test_condition)
     req(filtered_dds_rv())
-
+    # 🚨 Check for identical reference and test
+    if (input$reference_condition == input$test_condition) {
+      showNotification("Reference and Test conditions must be different.", type = "error")
+      return()
+    }
     dds <- filtered_dds_rv()
     dds[[input$metadata_column]] <- relevel(factor(dds[[input$metadata_column]]), ref = input$reference_condition)
     design(dds) <- as.formula(paste("~", input$metadata_column))
@@ -81,41 +85,6 @@ mod_differential_expression <- function(input, output, session, filtered_data_rv
     datatable(res_reactive(), options = list(scrollX = TRUE))
   })
 
-  # output$heatmapPlot <- renderPlot({
-  #   req(res_reactive(), filtered_data_rv(),input$num_genes)
-  #   
-  #   filtered_data <- filtered_data_rv()
-  #   
-  #   # Ensure 'input$num_genes' and 'input$metadata_column' are available
-  #   top_n <- input$num_genes
-  #   top_genes <- head(res_reactive()[order(res_reactive()$padj), ], top_n)
-  #   
-  #   expr <- filtered_data$norm_counts[rownames(top_genes), ]
-  #   expr <- log2(expr + 1)
-  #   
-  #   group_values <- filtered_data$samples[[input$metadata_column]]
-  #   group_levels <- unique(group_values)
-  #   
-  #   # Ensure 'group_values' and 'group_levels' are valid
-  #   palette <- colorRampPalette(brewer.pal(8, "Set2"))(length(group_levels))
-  #   ha <- ComplexHeatmap::HeatmapAnnotation(
-  #     df = data.frame(Group = group_values),
-  #     col = list(Group = setNames(palette, group_levels))
-  #   )
-  #   
-  #   cluster_cols <- if (!is.null(input$cluster_columns)) input$cluster_columns else TRUE
-  #   
-  #   ComplexHeatmap::Heatmap(expr,
-  #                           name = "log2(norm counts)",
-  #                           top_annotation = ha,
-  #                           cluster_rows = TRUE,
-  #                           cluster_columns = cluster_cols,
-  #                           show_column_names = FALSE,
-  #                           show_row_names = FALSE,
-  #                           width = unit(8, "cm"), height = unit(8, "cm"),
-  #                           column_title = paste("Top", top_n, "Differentially Expressed Genes"),
-  #                           column_title_gp = grid::gpar(fontface = "bold"))
-  # })
   generate_heatmap_plot <- function(filtered_data, top_n, res_data, metadata_column, cluster_columns) {
     # Ensure 'res_data' and 'filtered_data' are available
     top_genes <- head(res_data[order(res_data$padj), ], top_n)

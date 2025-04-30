@@ -152,7 +152,7 @@ ui <- fluidPage(
     tabPanel("Pathway Analysis", 
              sidebarLayout(
                sidebarPanel(
-                 selectInput("pathway_db", "Select Pathway Database:", choices = c("GO", "KEGG", "Reactome")),
+                 selectInput("pathway_db", "Select Pathway Database:", choices = c("GO", "KEGG", "Reactome", "DOSE")),
                  selectInput("pathway_direction", "Direction:", choices = c("Up", "Down", "Both")),
                  selectInput("circular_layout", "Circular Plot Layout:", choices = c("circle", "kk", "mds"), selected = "circle"),
                  sliderInput("lfc_threshold", "Log2 Fold Change Threshold:", min = 0, max = 4, value = 1, step = 0.25, ticks = TRUE),
@@ -253,6 +253,10 @@ ui <- fluidPage(
                  DT::DTOutput("overlappingGenesTable")
                )
              )
+    ),
+    tabPanel(
+      "Log",
+      mod_logger_ui("logger")  # 'logger' is the module ID
     )
   )
 )

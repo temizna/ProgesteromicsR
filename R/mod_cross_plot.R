@@ -68,6 +68,15 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
         input$metadata_column_y, input$test_condition_y, input$reference_condition_y)
     showNotification("Starting Cross Plot Analysis", type = "message")
     filtered_data<-filtered_data_rv()
+    # 🚨 Check for identical reference and test
+    if (input$reference_condition_x == input$test_condition_x) {
+      showNotification("Reference and Test conditions must be different.", type = "error")
+      return()
+    }
+    if (input$reference_condition_y == input$test_condition_y) {
+      showNotification("Reference and Test conditions must be different.", type = "error")
+      return()
+    }
     # Create contrasts for X and Y axes based on user inputs
     x_comp <- c(input$metadata_column_x, input$test_condition_x, input$reference_condition_x)
     y_comp <- c(input$metadata_column_y, input$test_condition_y, input$reference_condition_y)

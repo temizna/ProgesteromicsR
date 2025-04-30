@@ -30,6 +30,7 @@ mod_gsea_analysis(input, output, session, filtered_data_rv, res_reactive)
 mod_cancer_gene_census(input, output, session, res_reactive)
 mod_pathway_analysis_non_overlap(input, output, session, geneList_rv, filtered_data_rv, pathway_result_rv, res_reactive,geneListU_rv)
 mod_tf_enrichment_analysis(input, output, session, geneList_rv, tf_enrichment_result) 
+mod_logger_server("logger", input_all =input)
 onStop(function() {
     cat("Shiny app is closing cleanly...\n")
     stopApp()

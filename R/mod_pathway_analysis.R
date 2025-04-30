@@ -21,6 +21,7 @@
 #' @importFrom ReactomePA enrichPathway
 #' @importFrom org.Hs.eg.db org.Hs.eg.db
 #' @importFrom shinythemes shinytheme
+#' @importFrom DOSE enrichDO
 #' @export
 mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_reactive, geneList_rv, kegg_pathway_results, d1_merged_rv, pathway_input_rv, pathway_result_rv) {
 
@@ -73,6 +74,13 @@ mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_r
     if (input$pathway_db == "GO") {
       pathway_result <- clusterProfiler::enrichGO(gene = selected_genes, OrgDb = orgdb, keyType = "ENTREZID", ont = "BP", pAdjustMethod = "BH", pvalueCutoff = input$padj_threshold,
                                  qvalueCutoff  = input$pathway.qval,readable  = TRUE)
+    } else if (input$pathway_db == "DOSE") {
+      pathway_result <- DOSE::enrichDO(
+        gene = selected_genes,
+        ont = "DO",
+        pvalueCutoff = input$padj_threshold,
+        qvalueCutoff = input$pathway.qval,
+        readable = TRUE)
     } else if (input$pathway_db == "KEGG") {
       kegg_sp <- if( filtered_data$species == "Homo sapiens") "hsa" else "mmu"
       x <- clusterProfiler::enrichKEGG(gene = selected_genes, organism = kegg_sp, pvalueCutoff = input$padj_threshold,qvalueCutoff =  input$pathway.qval)

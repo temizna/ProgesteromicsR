@@ -9,7 +9,6 @@ mod_tf_enrichment_analysis(
   output,
   session,
   geneList_rv,
-  processed_tf_data,
   tf_enrichment_result
 )
 }
@@ -21,8 +20,6 @@ mod_tf_enrichment_analysis(
 \item{session}{Shiny session object}
 
 \item{geneList_rv}{Reactive value containing the gene list (log2FC vector) for enrichment}
-
-\item{processed_tf_data}{Reactive value containing selected tf data source data}
 
 \item{tf_enrichment_result}{reactive data containing the tf enrichment results}
 }
