@@ -14,6 +14,8 @@ mod_cancer_gene_census(input, output, session, res_reactive)
 \item{session}{Shiny session object}
 
 \item{res_reactive}{Reactive expression containing DE results (e.g., logFC, padj, etc.)}
+
+\item{Gene_Symbol}{Gene symbol from Cancer Gene Census data}
 }
 \description{
 This module compares differentially expressed genes (DEGs) from the DE results with a

@@ -12,7 +12,7 @@ mod_logger_server(id, input_all)
 \item{input_all}{The full Shiny input object (passed from main server)}
 }
 \value{
-None. Updates reactive user log internally.
+A reactive expression with log entries
 }
 \description{
 Logger Module Server

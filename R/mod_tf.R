@@ -11,6 +11,7 @@
 #' @param tf_enrichment_result reactive data containing the tf enrichment results
 #' @importFrom gson read.gmt
 #' @importFrom vroom vroom
+#' @importFrom dplyr left_join
 #' @export
 mod_tf_enrichment_analysis <- function(input, output, session, geneList_rv, tf_enrichment_result) {
   
@@ -69,7 +70,7 @@ mod_tf_enrichment_analysis <- function(input, output, session, geneList_rv, tf_e
       )
       
       tf_data_gmt <- tf_data %>%
-        left_join(tf_data_entrez, by = c("target_gene" = "SYMBOL")) %>%
+        dplyr::left_join(tf_data_entrez, by = c("target_gene" = "SYMBOL")) %>%
         select(TF_name, ENTREZID) %>%
         filter(!is.na(ENTREZID))
       

@@ -3,7 +3,7 @@
 #' @param id Shiny module id
 #' @param input_all The full Shiny input object (passed from main server)
 #' @return A reactive expression with log entries
-#' @importFrom shiny reactiveValuesToList moduleServer onStop req observeEvent renderText downloadHandler reactive
+#' @importFrom shiny reactiveValuesToList moduleServer onStop req observeEvent renderText reactiveValues reactive
 #' @export
 mod_logger_server <- function(id, input_all) {
   moduleServer(id, function(input, output, session) {
