@@ -6,49 +6,57 @@
 #' @importFrom shiny reactiveValuesToList moduleServer onStop req observeEvent renderText reactiveValues reactive
 #' @export
 mod_logger_server <- function(id, input_all) {
-  moduleServer(id, function(input, output, session) {
-    ns <- session$ns
-    
-    user_log <- reactiveValues(entries = character())
-    
-    observe({
-      req(input_all)
-      all_inputs <- reactiveValuesToList(input_all)
+  #' Logger Module Server
+  #'
+  #' @param id Shiny module id
+  #' @param input_all The full Shiny input object (from main server)
+  #' @return A reactive expression with log entries
+  #' @importFrom shiny reactiveValuesToList moduleServer onStop req observeEvent renderText reactiveValues reactive
+  #' @export
+  mod_logger_server <- function(id, input_all) {
+    moduleServer(id, function(input, output, session) {
+      ns <- session$ns
       
-      for (name in names(all_inputs)) {
-        observeEvent(input_all[[name]], {
-          value <- input_all[[name]]
-          if (!is.null(value)) {
-            log_entry <- paste0("[", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "] ", name, ": ", paste(value, collapse = ", "))
-            user_log$entries <- c(user_log$entries, log_entry)
+      user_log <- reactiveValues(entries = character())
+      
+      observe({
+        req(input_all)
+        isolate({
+          for (input_name in names(input_all)) {
+            observeEvent(input_all[[input_name]], {
+              val <- input_all[[input_name]]
+              if (!is.null(val)) {
+                timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+                entry <- paste0("[", timestamp, "] ", input_name, ": ", paste(val, collapse = ", "))
+                user_log$entries <- c(user_log$entries, entry)
+              }
+            }, ignoreInit = TRUE)
           }
-        }, ignoreInit = TRUE)
-      }
+        })
+      })
+      
+      output$log_text <- renderText({
+        paste(user_log$entries, collapse = "\n")
+      })
+      
+      output$download_log <- downloadHandler(
+        filename = function() paste0("user_session_log_", Sys.Date(), ".txt"),
+        content = function(file) {
+          writeLines(user_log$entries, con = file)
+        }
+      )
+      
+      session$onSessionEnded(function() {
+        log_dir <- file.path(getwd(), "logs")
+        if (!dir.exists(log_dir)) dir.create(log_dir, recursive = TRUE)
+        file_path <- file.path(log_dir, paste0("user_session_log_", format(Sys.time(), "%Y-%m-%d_%H-%M-%S"), ".txt"))
+        writeLines(user_log$entries, file_path)
+      })
+      
+      return(reactive(user_log$entries))
     })
-    
-    output$log_text <- renderText({
-      paste(user_log$entries, collapse = "\n")
-    })
-    
-    output$download_log <- downloadHandler(
-      filename = function() { paste0("user_session_log_", Sys.Date(), ".txt") },
-      content = function(file) {
-        writeLines(user_log$entries, con = file)
-      }
-    )
-    
-    session$onSessionEnded(function() {
-      log_dir <- file.path(getwd(), "logs")
-      if (!dir.exists(log_dir)) dir.create(log_dir, recursive = TRUE)
-      log_file <- file.path(log_dir, paste0("user_session_log_", format(Sys.time(), "%Y-%m-%d_%H-%M-%S"), ".txt"))
-      writeLines(user_log$entries, log_file)
-      message("[Logger] Saved session log to: ", log_file)
-    })
-    
-    # Return reactive expression for use in other modules
-    return(reactive(user_log$entries))
-  })
-}
+  }
+} 
 
 #' Logger Module UI
 #'
@@ -67,3 +75,4 @@ mod_logger_ui <- function(id) {
     downloadButton(ns("download_log"), "Download Log")
   )
 }
+
