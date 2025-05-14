@@ -1,0 +1,26 @@
+[2025-05-14 12:17:21] User clicked sample_select-select_all
+[2025-05-14 12:18:54] User clicked run_de
+Parameters: metadata_column: dimension; reference_condition: adherent2D; test_condition: sphere3D; lfc_threshold: 1; padj_threshold: 0.05; num_genes: 200; cluster_columns: TRUE
+[2025-05-14 12:19:20] User clicked run_gsea
+Parameters: gsea_split_dotplot: TRUE; gsea_color_scale: pvalue; gsea_db: GO; gsea_top_n: 10; lfc_threshold: 1; padj_threshold: 0.05; gsea_pvalue: 0.2
+[2025-05-14 12:19:21] User clicked run_cancer_gene_census
+[2025-05-14 12:25:08] User clicked run_tf_enrichment
+Parameters: tf_data_source: TF_Perturbations_Followed_by_Expression; tf.qval: 0.1
+[2025-05-14 12:25:16] User clicked run_tf_enrichment
+Parameters: tf_data_source: TF_Perturbations_Followed_by_Expression; tf.qval: 0.1
+[2025-05-14 12:25:19] User clicked run_tf_enrichment
+Parameters: tf_data_source: TRRUST_Transcription_Factors_2019; tf.qval: 0.1
+[2025-05-14 12:25:19] User clicked run_tf_enrichment
+Parameters: tf_data_source: TRRUST_Transcription_Factors_2019; tf.qval: 0.1
+[2025-05-14 12:25:20] User clicked run_tf_enrichment
+Parameters: tf_data_source: TRRUST_Transcription_Factors_2019; tf.qval: 0.1
+[2025-05-14 12:25:20] User clicked run_tf_enrichment
+Parameters: tf_data_source: TRRUST_Transcription_Factors_2019; tf.qval: 0.1
+[2025-05-14 12:25:21] User clicked run_tf_enrichment
+Parameters: tf_data_source: TRRUST_Transcription_Factors_2019; tf.qval: 0.1
+[2025-05-14 12:25:21] User clicked run_tf_enrichment
+Parameters: tf_data_source: TRRUST_Transcription_Factors_2019; tf.qval: 0.1
+[2025-05-14 12:26:09] User clicked run_tf_enrichment
+Parameters: tf_data_source: TFLink; tf.qval: 0.1
+[2025-05-14 12:26:20] User clicked run_tf_enrichment
+Parameters: tf_data_source: hTFtarget; tf.qval: 0.1

@@ -254,6 +254,61 @@ ui <- fluidPage(
                )
              )
     ),
+    tabPanel("PCA Cluster",
+             sidebarLayout(
+               sidebarPanel(
+                 sliderInput("max_pc", "Max number of PCs", min = 2, max = 20, value = 10),
+                 sliderInput("variance_threshold", "Variance threshold", min = 0.25, max = 4, value = 1, step = 0.05),
+                 sliderInput("percent_of_data", "Percent of data coverage", min = 0.25, max = 1, value = 0.8, step = 0.01),
+                 sliderInput("similarity_threshold", "Similarity for gene to Component assignment", min = 0, max = 1, value = 0.1),
+                 numericInput("max_genes", "Max genes per PC", value = 500, min = 50, max = 1000),
+                 numericInput("min_genes", "Min genes per PC", value = 50, min = 10, max = 500),
+                 selectInput("pca_enrich_method", "Enrichment Method",
+                             choices = c("groupGO", "enrichGO", "enrichKEGG", "enrichDO", "enrichPathway"),
+                             selected = "enrichGO"),
+                 actionButton("run_pca", "Run PCA Clustering"),
+                 downloadButton("download_pca_loadings", "Download Contributing Genes Heatmap"),
+                 downloadButton("download_pca_enrichment", "Download Enrichment Plot"),
+                 downloadButton("download_reconstructed_heatmap", "Download Reconstructed Heatmap"),
+                 downloadButton("download_sample_correlation_heatmap", "Download Sample Correlation"),
+                 downloadButton("download_pca_loadings_table", "Download Contributing Genes Table"),
+                 downloadButton("download_pca_enrichment_table", "Download Enrichment Table")
+               ),
+               mainPanel(
+                 helpText("This module performs Principal Component Analysis (PCA) to help you determine whether advanced methods like Consensus 
+                 Clustering (CC) or Non-negative Matrix Factorization (NMF) may be useful for further exploring sample substructure and 
+                 identifying gene contributors to sub-clusters. Since CC and NMF are computationally intensive, they are not included in this app.
+                 If needed, we recommend that users consult with an expert to run these analyses externally.
+
+                Inputs and parameters:
+
+                Number of PCs: The initial maximum number of principal components to compute.
+                
+                Variance threshold: Filters genes by standard deviation; only genes above the threshold are retained.
+                
+                Percent of data coverage: Sets the cumulative variance cutoff; selects the number of PCs required 
+                to explain this percentage of total variance.
+                
+                Similarity threshold: Determines whether a gene can be associated with multiple PCs based on its relative loading and 
+                if the loadings of different PCs are withing this threshold.
+                
+                Gene limits: You can set minimum and maximum numbers of genes per component for downstream pathway enrichment analysis.
+
+                          "),
+                 plotOutput("pca_variance_plot"),
+                 br(),
+                 textOutput("selected_pc_text"),
+                 br(),
+                 plotOutput("pca_loadings_heatmap"),
+                 # br(),
+                 # plotOutput("pca_reconstructed_heatmap"),
+                 br(),
+                 plotOutput("pca_sample_heatmap"),
+                 br(),
+                 plotOutput("pca_enrichment_plot")
+               )
+             )
+    ),
     tabPanel(
       "Log",
       mod_logger_ui("logger")  # 'logger' is the module ID

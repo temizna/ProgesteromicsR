@@ -10,10 +10,10 @@
 #' @param geneList_rv Reactive value containing the gene list (log2FC vector) for enrichment
 #' @param tf_enrichment_result reactive data containing the tf enrichment results
 #' @importFrom gson read.gmt
-#' @importFrom vroom vroom
 #' @importFrom dplyr left_join
+#' @importFrom vroom vroom
 #' @export
-mod_tf_enrichment_analysis <- function(input, output, session, geneList_rv, tf_enrichment_result) {
+mod_tf_enrichment_analysis <- function(input, output, session,res_reactive) {
   
   load_tf_data <- function(tf_data_source) {
     tf_data_file_map <- list(
@@ -41,12 +41,11 @@ mod_tf_enrichment_analysis <- function(input, output, session, geneList_rv, tf_e
   }
   
   # Reactive value to store enrichment results
-  tf_enrichment_results_rv <- reactiveVal()
   processed_tf_data <- reactiveVal()
   
   # Observe button click
   observeEvent(input$run_tf_enrichment, {
-    req(geneList_rv())
+    req(res_reactive(),filtered_data_rv$species)
     print("Running TF Enrichment Analysis...")
     tf_data_source <- input$tf_data_source
     print(paste("Selected TF data source:", tf_data_source))
@@ -55,8 +54,8 @@ mod_tf_enrichment_analysis <- function(input, output, session, geneList_rv, tf_e
       # Load TF data using helper function
       tf_data <- load_tf_data(tf_data_source)
       
-      print("TF data loaded:")
-      print(head(tf_data))
+      #print("TF data loaded:")
+      #print(head(tf_data))
       
       # Process TF data: always map target genes to ENTREZ IDs
       tf_data <- tf_data %>%
@@ -71,19 +70,40 @@ mod_tf_enrichment_analysis <- function(input, output, session, geneList_rv, tf_e
       
       tf_data_gmt <- tf_data %>%
         dplyr::left_join(tf_data_entrez, by = c("target_gene" = "SYMBOL")) %>%
-        select(TF_name, ENTREZID) %>%
-        filter(!is.na(ENTREZID))
+        dplyr::select(TF_name, ENTREZID) %>%
+        dplyr::filter(!is.na(ENTREZID))
       
-      print("Processed TERM2GENE:")
-      print(head(tf_data_gmt))
+      species <- filtered_data_rv$species
+      orgdb <- get_orgdb(species)
+      res <- isolate(res_reactive())
+      direction <- input$pathway_direction
       
-      print("Processed GENELIST:")
-      print(head(geneList_rv()))
-      print("TF QVaL:")
-      print(input$tf.qval)
-      # Perform enrichment analysis
+      res <- res[!is.na(res$log2FoldChange) & !is.na(res$padj), ]
+      d1 <- res[, c("log2FoldChange", "padj")]
+      d1$gene <- toupper(rownames(res)) # converting mouse to human assuming similar gene names for ortologs
+      
+      if (is_symbol(d1$gene)) {
+        d1_ids <- bitr(d1$gene, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = orgdb)
+      } else {
+        d1_ids <- bitr(d1$gene, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = orgdb)
+      }
+      
+      d1_merged <- merge(d1, d1_ids, by.x = "gene", by.y = 1)
+      d1_merged <- d1_merged[!duplicated(d1_merged$ENTREZID), ]
+      
+      gene_vector <- d1_merged[abs(d1_merged$log2FoldChange) >= input$lfc_threshold & d1_merged$padj <= input$padj_threshold, ]
+      gene_vector <- gene_vector[!is.na(gene_vector$log2FoldChange) & !is.na(gene_vector$ENTREZID), ]
+      geneList <- gene_vector$log2FoldChange
+      names(geneList) <- gene_vector$ENTREZID
+      geneList <- geneList[!duplicated(names(geneList))]
+      geneList <- sort(geneList, decreasing = TRUE)
+      max_genes <- 1000
+      if (length(geneList) > max_genes) geneList <- head(geneList, max_genes)
+      
+      selected_genes <- names(geneList)
+      
       tf_result <- clusterProfiler::enricher(
-        gene = names(geneList_rv()),
+        gene = selected_genes,
         TERM2GENE = tf_data_gmt,
         pvalueCutoff = 0.05,
         qvalueCutoff = input$tf.qval
@@ -93,8 +113,6 @@ mod_tf_enrichment_analysis <- function(input, output, session, geneList_rv, tf_e
         showNotification("No enriched terms found in TF enrichment.", type = "warning")
         return()
       }
-      
-      tf_enrichment_results_rv(tf_result)
       
       output$tf_dotplot <- renderPlot({
         enrichplot::dotplot(tf_result) + theme(axis.text.y = element_text(size = 6, face = "bold"))

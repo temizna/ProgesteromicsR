@@ -162,7 +162,7 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
     df$category <- "Other"
     df$category[df$log2FoldChange_x >= 1 & df$log2FoldChange_y >= 1] <- "Up-Up"
     df$category[df$log2FoldChange_x <= -1 & df$log2FoldChange_y <= -1] <- "Down-Down"
-    df$category[abs(df$log2FoldChange_x) > 1 & df$log2FoldChange_y < 1 & df$log2FoldChange_y >-1] <- "Comp1-only"
+    df$category[abs(df$log2FoldChange_x) >= 1 & df$log2FoldChange_y < 1 & df$log2FoldChange_y >-1] <- "Comp1-only"
     df$category[df$log2FoldChange_x < 1 & df$log2FoldChange_x > -1 & abs(df$log2FoldChange_y) >= 1] <- "Comp2-only"
     df$category[df$log2FoldChange_x >= 1 & df$log2FoldChange_y <= -1] <- "Up-Down"
     df$category[df$log2FoldChange_x <= -1 & df$log2FoldChange_y >= 1] <- "Down-Up"
@@ -235,7 +235,7 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
   # Download handlers for both plots
   generate_cross_pathway_plot <- function(crossplot_data, filtered_data_rv) {
     df <- crossplot_data
-    species <- filtered_data_rv$species
+    species <- filtered_data_rv()$species
     orgdb <- get_orgdb(species)
     
     # Top N significant genes by combined adjusted p-values
