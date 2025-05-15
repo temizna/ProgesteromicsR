@@ -13,7 +13,7 @@
 #' @importFrom dplyr left_join
 #' @importFrom vroom vroom
 #' @export
-mod_tf_enrichment_analysis <- function(input, output, session,res_reactive) {
+mod_tf_enrichment_analysis <- function(input, output, session,res_reactive, filtered_data_rv) {
   
   load_tf_data <- function(tf_data_source) {
     tf_data_file_map <- list(
@@ -45,7 +45,7 @@ mod_tf_enrichment_analysis <- function(input, output, session,res_reactive) {
   
   # Observe button click
   observeEvent(input$run_tf_enrichment, {
-    req(res_reactive(),filtered_data_rv$species)
+    req(res_reactive(),filtered_data_rv()$species)
     print("Running TF Enrichment Analysis...")
     tf_data_source <- input$tf_data_source
     print(paste("Selected TF data source:", tf_data_source))
@@ -73,7 +73,7 @@ mod_tf_enrichment_analysis <- function(input, output, session,res_reactive) {
         dplyr::select(TF_name, ENTREZID) %>%
         dplyr::filter(!is.na(ENTREZID))
       
-      species <- filtered_data_rv$species
+      species <- filtered_data_rv()$species
       orgdb <- get_orgdb(species)
       res <- isolate(res_reactive())
       direction <- input$pathway_direction

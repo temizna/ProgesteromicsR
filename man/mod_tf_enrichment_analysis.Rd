@@ -8,8 +8,8 @@ mod_tf_enrichment_analysis(
   input,
   output,
   session,
-  geneList_rv,
-  tf_enrichment_result
+  res_reactive,
+  filtered_data_rv
 )
 }
 \arguments{

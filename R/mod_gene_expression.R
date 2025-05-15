@@ -89,7 +89,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
     p <- ggplot(long_df, aes(x = Group, y = log2_Expression, color = Group)) +
       geom_boxplot(outlier.shape = NA) +
       geom_jitter(width = 0.25, alpha = 0.6) +
-      facet_wrap(~Gene, scales = "free_y") +
+      facet_wrap(~Gene, scales = "fixed") +
       theme_minimal() +
       theme(axis.title = element_text(face = "bold"),
             axis.text.x = element_text(face = "bold",angle = 90, hjust = 1)) + 

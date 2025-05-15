@@ -29,7 +29,7 @@ mod_gsea_analysis(input, output, session, filtered_data_rv, res_reactive)
 # In your main server function, call the `mod_depmaps_server` like so:
 mod_cancer_gene_census(input, output, session, res_reactive)
 mod_pathway_analysis_non_overlap(input, output, session, geneList_rv, filtered_data_rv, pathway_result_rv, res_reactive,geneListU_rv)
-mod_tf_enrichment_analysis(input, output, session, res_reactive) 
+mod_tf_enrichment_analysis(input, output, session, res_reactive,filtered_data_rv) 
 mod_logger_server("logger", input_all = input)
 mod_pca_cluster_server(input, output, session, filtered_data_rv)
 onStop(function() {
