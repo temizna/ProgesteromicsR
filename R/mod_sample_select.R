@@ -128,13 +128,7 @@ mod_sample_select <- function(input, output, session, dds_rv, loaded_data_rv, fi
     # Deselect all samples in "Select Samples" dropdown
     samples<-loaded_data_rv()$samples
     # Optionally, reset filtered data to the full dataset
-    data <- loaded_data_rv()
-    filtered_data_rv(list(
-      counts = data$counts,
-      samples = data$samples,
-      norm_counts = data$norm_counts,
-      species = data$species
-    )) # Reset to full data
+    filtered_data_rv(loaded_data_rv())  # Reset to full data
     # Optionally, reset the filtered DESeq2 object to the full dds_rv
     filtered_dds_rv(dds_rv())  # Reset to full DESeq2 object
   })
