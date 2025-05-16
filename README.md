@@ -124,7 +124,7 @@ BiocManager::install(c(
 install.packages("pathfindR")
 
 # Clone or download this repo, then from root directory:
-devtools::install_github("temizna/ProgesteromicsR"))
+devtools::install_github("temizna/ProgesteromicsR")
 ```
 
 ## 🚀 Running the App
