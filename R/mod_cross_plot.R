@@ -273,7 +273,7 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
       filter(!is.na(log2FoldChange_x) & !is.na(ENTREZID))
     
     # Perform pathway analysis using compareCluster
-    formula_res <- compareCluster(ENTREZID ~ category, data = df_merged2, fun = "enrichKEGG")
+    formula_res <- compareCluster(ENTREZID ~ category, data = df_merged2, fun = input$cp_pathway_db)
     
     # Check if formula_res is NULL or empty
     if (is.null(formula_res) || nrow(formula_res) == 0) {
@@ -296,7 +296,7 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
   
   # Download Handler for Cross Pathway Plot
   output$download_cross_pathway_plot <- downloadHandler(
-    filename = function() { paste0("cross_pathway_plot_", Sys.Date(), ".pdf") },
+    filename = function() { paste0("cross_pathway_plot_", Sys.Date(), "_",input$test_condition_x,"_",input$test_condition_y,".pdf") },
     content = function(file) {
       pdf(file)
       df <- crossplot_data()
@@ -340,6 +340,22 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
       main = "Downregulated Genes Venn",
       disable.logging = TRUE  # Ensure logging is turned off
     )
+    overlapping_genes <- reactive({
+      req(crossplot_data())
+      df <- crossplot_data()
+      lfc_cutoff <- 1
+      padj_cutoff <- 0.05
+      
+      up_x <- df$gene[df$log2FoldChange_x > lfc_cutoff & df$padj_x < padj_cutoff]
+      up_y <- df$gene[df$log2FoldChange_y > lfc_cutoff & df$padj_y < padj_cutoff]
+      down_x <- df$gene[df$log2FoldChange_x < -lfc_cutoff & df$padj_x < padj_cutoff]
+      down_y <- df$gene[df$log2FoldChange_y < -lfc_cutoff & df$padj_y < padj_cutoff]
+      
+      list(
+        up_overlap = intersect(up_x, up_y),
+        down_overlap = intersect(down_x, down_y)
+      )
+    })
     
     # Return both plots as a list for further manipulation
     return(list(up_venn = up_venn, down_venn = down_venn))
@@ -359,7 +375,7 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
   
   # Download Handler for Cross Venn Plot
   output$download_cross_venn_plot <- downloadHandler(
-    filename = function() { paste0("cross_venn_plot_", Sys.Date(), ".pdf") },
+    filename = function() { paste0("cross_venn_plot_", Sys.Date(),"_",input$test_condition_x,"_",input$test_condition_y,".pdf") },
     content = function(file) {
       pdf(file)
       df <- crossplot_data()
@@ -374,6 +390,17 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
   )
   
   
+  output$download_overlap_genes <- downloadHandler(
+    filename = function() {
+      paste0("cross_plot_overlap_genes_", Sys.Date(),"_",input$test_condition_x,"_",input$test_condition_y, ".csv")
+    },
+    content = function(file) {
+      overlaps <- overlapping_genes()
+      up <- data.frame(Gene = overlaps$up_overlap, Direction = "Upregulated")
+      down <- data.frame(Gene = overlaps$down_overlap, Direction = "Downregulated")
+      write.csv(rbind(up, down), file, row.names = FALSE)
+    }
+  )
   
 }
 #mod_cross_plot(input, output, session, filtered_dds_rv)

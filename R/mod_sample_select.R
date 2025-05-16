@@ -125,18 +125,35 @@ mod_sample_select <- function(input, output, session, dds_rv, loaded_data_rv, fi
   
   observeEvent(input$select_all, {
     req(loaded_data_rv(), dds_rv())
-    # Deselect all samples in "Select Samples" dropdown
-    samples<-loaded_data_rv()$samples
     # Optionally, reset filtered data to the full dataset
-    filtered_data_rv(loaded_data_rv())  # Reset to full data
     # Optionally, reset the filtered DESeq2 object to the full dds_rv
+    data <- loaded_data_rv()
+    filtered_data_rv(list(
+      counts = data$counts,
+      samples = data$samples,
+      norm_counts = data$norm_counts,
+      species = data$species
+    ))
     filtered_dds_rv(dds_rv())  # Reset to full DESeq2 object
   })
+  
   # Example: Render filtered data table
   output$filteredDataTable <- renderDT({
     req(filtered_data_rv())
-    datatable(filtered_data_rv()$samples)
+    tryCatch({
+      datatable(filtered_data_rv()$samples)
+    }, error = function(e) {
+      showNotification(paste("Error rendering table:", e$message), type = "error")
+      NULL
+    })
   })
+  
+  output$download_sample_table <- downloadHandler(
+    filename = function() "selected_sample_table.csv",
+    content = function(file) {
+      write.csv(filtered_data_rv()$samples, file, row.names = FALSE)
+    }
+  )
 }
 
 

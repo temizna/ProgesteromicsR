@@ -21,15 +21,16 @@ ui <- fluidPage(
                  selectInput("filter_PR", "Filter by PR state", choices = NULL, multiple = TRUE),
                  selectInput("filter_ER", "Filter by ER state", choices = NULL, multiple = TRUE),
                  actionButton("run_filter", "FILTER!!"),
-                 actionButton("deselect_all", "Deselect All Samples")
+                 actionButton("deselect_all", "Deselect All Samples"),
+                 downloadButton("download_sample_table", "Download Sample Table")
                ),
-               mainPanel(DT::DTOutput("sampleTable"))
+               mainPanel(DT::DTOutput("filteredDataTable"))
              )
     ),
     tabPanel("Individual Gene Expression", 
              sidebarLayout(
                sidebarPanel(
-                 textInput("gene_select", "Enter Gene(s) (space-separated):", value = ""),
+                 textInput("gene_select", "Enter Gene(s) of Interest (space-separated):", value = ""),
                  selectInput("group_select_geneexpr", "Group by:", choices = NULL),
                  downloadButton("download_gene_plot", "Download Plot")
                ),
@@ -77,7 +78,7 @@ ui <- fluidPage(
     tabPanel("Volcano Plot",
              sidebarLayout(
                sidebarPanel(
-                 textInput("volcano_select", "Enter Gene(s) (space-separated):", value = ""),
+                 textInput("volcano_select", "Enter Gene(s) of Interest (space-separated):", value = ""),
                  numericInput("volcano_gene_label", "Top N Genes to Label:", value = 10, min = 5, max = 50, step = 1),
                  sliderInput("volcano_lfc", "Log2 Fold Change Cutoff", min = 0, max = 4, value = 1, step = 0.1),
                  sliderInput("volcano_padj", "Adjusted P-value Cutoff", min = 0, max = 0.1, value = 0.05, step = 0.005),
@@ -94,18 +95,20 @@ ui <- fluidPage(
     tabPanel("Cross Plot",
              sidebarLayout(
                sidebarPanel(
-                 textInput("crossplot_gene_label", "Enter Gene(s) (space-separated):", value = ""),
+                 textInput("crossplot_gene_label", "Enter Gene(s) of Interest (space-separated):", value = ""),
                  selectInput("metadata_column_x", "X-axis Metadata Column:", choices = NULL),
                  selectInput("reference_condition_x", "X-axis Reference Condition:", choices = NULL),
                  selectInput("test_condition_x", "X-axis Test Condition:", choices = NULL),
                  selectInput("metadata_column_y", "Y-axis Metadata Column:", choices = NULL),
                  selectInput("reference_condition_y", "Y-axis Reference Condition:", choices = NULL),
                  selectInput("test_condition_y", "Y-axis Test Condition:", choices = NULL),
+                 selectInput("cp_pathway_db", "Select Pathway Database:", choices = c("enrichGO", "enrichKEGG", "enrichPathway", "enrichDO")),
                  numericInput("crossplot_gene_count", "Top N Genes to Plot:", value = 2000, min = 10, max = 5000, step = 10),
                  numericInput("crossplot_topgenes", "Top N Genes to Label:", value = 10, min = 1, max = 100, step = 1),
                  actionButton("run_crossplot", "Run Cross Plot"),
                  downloadButton("download_cross_plot", "Download Cross Plot"),
                  downloadButton("download_cross_venn_plot", "Download Venn Diagram"),
+                 downloadButton("download_overlap_genes", "Download Overlapping Genes"),
                  downloadButton("download_cross_pathway_plot", "Download Pathway Plot")
                ),
                mainPanel(

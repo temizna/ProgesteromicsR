@@ -119,7 +119,7 @@ mod_cancer_gene_census <- function(input, output, session, res_reactive) {
   # Download the Venn diagram as PDF
   output$download_cgc_venn_plot <- downloadHandler(
     filename = function() {
-      paste("venn_diagram.pdf")
+      paste("_",input$test_condition,"_vs_",input$reference_condition,"_venn_diagram.pdf")
     },
     content = function(file) {
       pdf(file)

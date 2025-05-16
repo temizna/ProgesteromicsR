@@ -224,7 +224,7 @@ mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_r
   })
 
   output$download_dot_plot <- downloadHandler(
-    filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_dot_plot.pdf", sep="")  },
+    filename = function() { paste0("Pathway_","_",input$test_condition,"_vs_",input$reference_condition,input$pathway_db,"_",input$pathway_direction,"_dot_plot.pdf", sep="")  },
     content = function(file) {
       pdf(file)
       print(enrichplot::dotplot(pathway_result) + theme(axis.text.y = element_text(size = 6, face = "bold")))
@@ -238,7 +238,7 @@ mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_r
   })
   
   output$download_heatmap_plot <- downloadHandler(
-    filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_heatmap_plot.pdf", sep="") },
+    filename = function() { paste0("Pathway_","_",input$test_condition,"_vs_",input$reference_condition,input$pathway_db,"_",input$pathway_direction,"_heatmap_plot.pdf", sep="") },
     content = function(file) {
       pdf(file)
       print(enrichplot::heatplot(pathway_result, foldChange=geneList , showCategory = 5)) #+ theme(axis.text.y = element_text(size = 6, face = "bold")))
@@ -252,7 +252,7 @@ mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_r
   })
   
   output$download_tree_plot <- downloadHandler(
-    filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_tree_plot.pdf", sep="") },
+    filename = function() { paste0("Pathway_",input$test_condition,"_vs_",input$reference_condition,"_",input$pathway_db,"_",input$pathway_direction,"_tree_plot.pdf", sep="") },
     content = function(file) {
       pdf(file)
       print(enrichplot::treeplot(pathway_result) + theme(axis.text.y = element_text(size = 6, face = "bold")))
@@ -266,7 +266,7 @@ mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_r
   })
   
   output$download_upset_plot <- downloadHandler(
-    filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_upset_plot.pdf", sep="") },
+    filename = function() { paste0("Pathway_",input$test_condition,"_vs_",input$reference_condition,"_",input$pathway_db,"_",input$pathway_direction,"_upset_plot.pdf", sep="") },
     content = function(file) {
       pdf(file)
       print(enrichplot::upsetplot(pathway_result) + theme(axis.text.y = element_text(size = 6, face = "bold")))
@@ -281,7 +281,7 @@ mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_r
   })
 
   output$download_emap_plot <- downloadHandler(
-    filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_emap_plot.pdf", sep="") },
+    filename = function() { paste0("Pathway_",input$test_condition,"_vs_",input$reference_condition,"_",input$pathway_db,"_",input$pathway_direction,"_emap_plot.pdf", sep="") },
     content = function(file) {
       req(pathway_result)
       #pathway_result_filtered <- subset(pathway_result, padj < 0.05)
@@ -298,7 +298,7 @@ mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_r
   })
 
   output$download_cnet_plot <- downloadHandler(
-    filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_cnet_plot.pdf", sep="") },
+    filename = function() { paste0("Pathway_",input$test_condition,"_vs_",input$reference_condition,"_",input$pathway_db,"_",input$pathway_direction,"_cnet_plot.pdf", sep="") },
     content = function(file) {
       pdf(file)
       print(enrichplot::cnetplot(pathway_result))
@@ -314,7 +314,7 @@ mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_r
   })
 
   output$download_circular_plot <- downloadHandler(
-    filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_",input$circular_layout,"_circular_plot.pdf", sep="") },
+    filename = function() { paste0("Pathway_",input$test_condition,"_vs_",input$reference_condition,"-",input$pathway_db,"_",input$pathway_direction,"_",input$circular_layout,"_circular_plot.pdf", sep="") },
     content = function(file) {
       req(pathway_result, geneList_rv())
       pdf(file)
@@ -330,7 +330,7 @@ mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_r
   })
 
   output$download_pathway_table <- downloadHandler(
-    filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_results.csv", sep="")  },
+    filename = function() { paste0("Pathway_",input$test_condition,"_vs_",input$reference_condition,"_",input$pathway_db,"_",input$pathway_direction,"_results.csv", sep="")  },
     content = function(file) {
       write.csv(as.data.frame(pathway_result), file, row.names = FALSE)
     }

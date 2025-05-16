@@ -119,7 +119,7 @@ mod_tf_enrichment_analysis <- function(input, output, session,res_reactive, filt
       })
       
       output$download_tf_dotplot <- downloadHandler(
-        filename = function() paste0("TF_Enrichment_", input$tf_data_source, "_dotplot.pdf"),
+        filename = function() paste0("TF_Enrichment_", input$tf_data_source,"_",input$test_condition,"_vs_",input$reference_condition, "_dotplot.pdf"),
         content = function(file) {
           pdf(file)
           print(enrichplot::dotplot(tf_result) + theme(axis.text.y = element_text(size = 6, face = "bold")))
@@ -132,7 +132,7 @@ mod_tf_enrichment_analysis <- function(input, output, session,res_reactive, filt
       })
       
       output$download_tf_results_table <- downloadHandler(
-        filename = function() paste0("TF_Enrichment_", input$tf_data_source, "_results.csv"),
+        filename = function() paste0("TF_Enrichment_", input$tf_data_source,"_",input$test_condition,"_vs_",input$reference_condition, "_results.csv"),
         content = function(file) {
           write.csv(as.data.frame(tf_result@result), file, row.names = FALSE)
         }

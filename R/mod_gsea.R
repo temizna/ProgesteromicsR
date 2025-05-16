@@ -94,7 +94,7 @@ mod_gsea_analysis <- function(input, output, session, filtered_data_rv, res_reac
     })
 
     output$download_gsea_dot_plot <- downloadHandler(
-      filename = function() { paste0("GSEA_",input$gsea_db,"_dot_plot.pdf", sep="")  },
+      filename = function() { paste0("GSEA_","_",input$test_condition,"_vs_",input$reference_condition,"_",input$gsea_db,"_dot_plot.pdf", sep="")  },
       content = function(file) {
         pdf(file)
         gsea_result@result$.sign <- ifelse(gsea_result@result$NES > 0, "Activated", "Inhibited")
@@ -124,7 +124,7 @@ mod_gsea_analysis <- function(input, output, session, filtered_data_rv, res_reac
     
     output$download_gsea_enrichment_plot <- downloadHandler(
       filename = function() {
-        paste0("gsea_enrichment_plot_", gsub("\\W+", "_", input$gsea_selected_pathway), ".pdf")
+        paste0("gsea_enrichment_plot_","_",input$test_condition,"_vs_",input$reference_condition,"_", gsub("\\W+", "_", input$gsea_selected_pathway), ".pdf")
       },
       content = function(file) {
         pdf(file, width = 8, height = 6)
@@ -139,7 +139,7 @@ mod_gsea_analysis <- function(input, output, session, filtered_data_rv, res_reac
     })
     
     output$download_gsea_upset_plot <- downloadHandler(
-      filename = function() { paste0("GSEA_",input$gsea_db,"_upset_plot.pdf", sep="") },
+      filename = function() { paste0("GSEA_",input$gsea_db,"_",input$test_condition,"_vs_",input$reference_condition,"_upset_plot.pdf", sep="") },
       content = function(file) {
         pdf(file)
         print(enrichplot::upsetplot(gsea_result) + theme(axis.text.y = element_text(size = 6, face = "bold")))
@@ -150,7 +150,7 @@ mod_gsea_analysis <- function(input, output, session, filtered_data_rv, res_reac
       datatable(as.data.frame(gsea_result), options = list(scrollX = TRUE))
     })
     output$download_gsea_table <- downloadHandler(
-      filename = function() { paste0("GSEA_",input$gsea_db,"_result.csv", sep="")  },
+      filename = function() { paste0("GSEA_",input$gsea_db,"_",input$test_condition,"_vs_",input$reference_condition,"_result.csv", sep="")  },
       content = function(file) {
         write.csv(as.data.frame(gsea_result), file, row.names = FALSE)
       }

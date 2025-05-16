@@ -120,7 +120,7 @@ mod_pathway_analysis_non_overlap <- function(input, output, session, geneList_rv
     })
     
     output$download_nonOL_dot_plot <- downloadHandler(
-      filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_nonOL_dot_plot.pdf", sep="")  },
+      filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_",input$test_condition,"_vs_",input$reference_condition,"_nonOL_dot_plot.pdf", sep="")  },
       content = function(file) {
         pdf(file)
         print(enrichplot::dotplot(pathway_result) + theme(axis.text.y = element_text(size = 6, face = "bold")))
@@ -133,7 +133,7 @@ mod_pathway_analysis_non_overlap <- function(input, output, session, geneList_rv
     })
     
     output$download_nonOL_heatmap_plot <- downloadHandler(
-      filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_nonOL_heatmap_plot.pdf", sep="") },
+      filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_",input$test_condition,"_vs_",input$reference_condition,"_nonOL_heatmap_plot.pdf", sep="") },
       content = function(file) {
         pdf(file)
         print(enrichplot::heatplot(pathway_result, foldChange=geneListU_rv() , showCategory = 5))
@@ -146,7 +146,7 @@ mod_pathway_analysis_non_overlap <- function(input, output, session, geneList_rv
     })
     
     output$download_nonOL_tree_plot <- downloadHandler(
-      filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_nonOL_tree_plot.pdf", sep="") },
+      filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_",input$test_condition,"_vs_",input$reference_condition,"_nonOL_tree_plot.pdf", sep="") },
       content = function(file) {
         pdf(file)
         print(enrichplot::treeplot(pathway_result) + theme(axis.text.y = element_text(size = 6, face = "bold")))
@@ -160,7 +160,7 @@ mod_pathway_analysis_non_overlap <- function(input, output, session, geneList_rv
     })
     
     output$download_pathway_nonOL_table <- downloadHandler(
-      filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_nonOL_results.csv", sep="")  },
+      filename = function() { paste0("Pathway_",input$pathway_db,"_",input$pathway_direction,"_",input$test_condition,"_vs_",input$reference_condition,"_nonOL_results.csv", sep="")  },
       content = function(file) {
         write.csv(as.data.frame(pathway_result), file, row.names = FALSE)
       }
