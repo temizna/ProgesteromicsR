@@ -86,9 +86,19 @@ VignetteBuilder: knitr
   - KEGG pathway download (no-rendering)  with `pathfindR` + gene heatmaps
 
 - **GSEA (Gene Set Enrichment Analysis)**  
-  - Supports MSigDB collections: Hallmark, GO, KEGG, Reactome  
+  - Supports MSigDB collections: Hallmark, GO, KEGG, Reactome, Cancer Cell Atlas, Cancer Modules, Txn factor Targets  
   - Dot plots, enrichment plot, upset plot  and enrichment tables
-
+- **Non-overlap Pathway Analysis**
+  - Overlapping genes from the initial selected pathway analysis is removed and same pathway analysis is re-run. 
+  - Visualizations: Dot, tree, heatmap plots and pathway tables 
+- **Transcription Factor Enrichment**
+  - Supports TRANSFAC and JASPAR, ENCODE, TRRUST, TF Perturbations followed by Expression, hFTarget, TFLink
+  - Enrichment dot plots and enrich term tables
+- **PCA Analysis (Simple Consensus Clustering)**
+  - Principle components covering user selected variance is used to create sample clusters, select gene features and comparison pathway analysis
+  - Visualizations: Contributing genes heatmap, sample correlation heatmap, dot plot of enrichment comparison between components, enrichment and contributing genes tables
+- **Session Log**
+  - Live session log that logs all variable selections in order of clicks and their related action buttons (i.e. run differential expression)
 ## 🧬 Supported Species
 
 - Homo sapiens
