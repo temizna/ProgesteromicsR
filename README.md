@@ -124,7 +124,7 @@ BiocManager::install(c(
 install.packages("pathfindR")
 
 # Clone or download this repo, then from root directory:
-devtools::install()
+devtools::install_github("temizna/ProgesteromicsR"))
 ```
 
 ## 🚀 Running the App
@@ -132,8 +132,8 @@ devtools::install()
 After installation, launch the app from R or RStudio:
 
 ```r
-library(RNAnalyzeR)
-RNAnalyzeR::run_app()
+library(ProgesteromicsR)
+ProgesteromicsR::run_app()
 ```
 
 This will open the app in your default web browser.
