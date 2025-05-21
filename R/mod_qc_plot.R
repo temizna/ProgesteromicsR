@@ -43,7 +43,9 @@ mod_qc_plot <- function(input, output, session, filtered_data_rv) {
     
     # Generate Plot Based on QC Plot Type
     if (input$qc_plot_type == "PCA") {
-      pca <- prcomp(t(log2(filtered_data$norm_counts + 1)), scale. = TRUE)
+      expr <- log2(data$norm_counts + 1)
+      expr <- expr[apply(expr, 1, function(x) var(x, na.rm = TRUE) > 0), , drop = FALSE]
+      pca <- prcomp(t(expr), scale. = TRUE) 
       percentVar <- round(100 * (pca$sdev^2 / sum(pca$sdev^2)), 1)
       df <- data.frame(PC1 = pca$x[, 1], PC2 = pca$x[, 2], Group = group_factor, Sample = rownames(filtered_data$samples))
       
