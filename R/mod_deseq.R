@@ -122,18 +122,17 @@ mod_differential_expression <- function(input, output, session, filtered_data_rv
     
     return(heatmap_plot)
   }
+
   output$heatmapPlot <- renderPlot({
-    req(filtered_data_rv(),res_reactive())  # Ensure all required inputs are available
+    req(filtered_data_rv(), res_reactive(), input$cluster_columns)  # 👈 ensures reactivity
     
     filtered_data <- filtered_data_rv()
     top_n <- input$num_genes
     metadata_column <- input$metadata_column
-    cluster_columns <- input$cluster_columns  # Assuming this input exists for clustering options
-    # Print to check if inputs are valid
-   # print("Inputs are valid for heatmap rendering")
+    cluster_columns <- isTRUE(input$cluster_columns)  # default FALSE-safe
+    
     top_genes <- head(res_reactive()[order(res_reactive()$padj), ], top_n)
-    expr <- filtered_data$norm_counts[rownames(top_genes), ]
-    expr <- log2(expr + 1)
+    expr <- log2(filtered_data$norm_counts[rownames(top_genes), , drop = FALSE] + 1)
     
     group_values <- filtered_data$samples[[metadata_column]]
     group_levels <- unique(group_values)
@@ -142,30 +141,19 @@ mod_differential_expression <- function(input, output, session, filtered_data_rv
       df = data.frame(Group = group_values),
       col = list(Group = setNames(palette, group_levels))
     )
-    cluster_cols <- if (!is.null(cluster_columns)) cluster_columns else TRUE
     
-    ComplexHeatmap::Heatmap(expr,
-                            name = "log2(norm counts)",
-                            top_annotation = ha,
-                            cluster_rows = TRUE,
-                            cluster_columns = cluster_cols,
-                            show_column_names = FALSE,
-                            show_row_names = TRUE,
-                            row_names_gp = gpar(fontsize=4, fontface="bold"),
-                            column_title = paste("Top", top_n, "Diff Genes"),
-                            column_title_gp = grid::gpar(fontface = "bold"))
-    # Call the function to generate the heatmap plot
-    # heatmap_plot <- generate_heatmap_plot(
-    #   filtered_data = filtered_data,
-    #   top_n = top_n,
-    #   res_data = res_reactive(),
-    #   metadata_column = metadata_column,
-    #   cluster_columns = cluster_columns
-    # )
-    # # Check if the plot is being created correctly
-    # print("Heatmap plot generated successfully")
-    # # Return the heatmap plot
-    # ComplexHeatmap::draw(heatmap_plot, merge_legend = TRUE)
+    ComplexHeatmap::draw(ComplexHeatmap::Heatmap(
+      expr,
+      name = "log2(norm counts)",
+      top_annotation = ha,
+      cluster_rows = TRUE,
+      cluster_columns = cluster_columns,
+      show_column_names = FALSE,
+      show_row_names = TRUE,
+      row_names_gp = grid::gpar(fontsize = 4, fontface = "bold"),
+      column_title = paste("Top", top_n, "Diff Genes"),
+      column_title_gp = grid::gpar(fontface = "bold")
+    ))
   })
   
   

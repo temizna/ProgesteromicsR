@@ -68,6 +68,8 @@ VignetteBuilder: knitr
 - **Quality Control (QC)**  
   - PCA, sample distance heatmaps, mean-variance plots, variance histograms
 
+- **Genes of interest Heatmap Visualization**
+  - Gene expression heatmap of uploaded genes of interest grouped by metadata categories
 - **Differential Expression Analysis**  
   - DESeq2-based analysis with customizable thresholds and conditions
 
@@ -79,7 +81,7 @@ VignetteBuilder: knitr
 
 - **Cross Plot**  
   - Compare DE results between two conditions or experiments
-
+  - Cross plot of DE genes, venn diagram and heatmap of overlaps and table of overlaps
 - **Pathway Analysis**  
   - GO, KEGG, Reactome enrichment using clusterProfiler  
   - Visualizations: dot, cnet, circular, emap, heatmap, tree, upset plots  
@@ -93,7 +95,8 @@ VignetteBuilder: knitr
   - Visualizations: Dot, tree, heatmap plots and pathway tables 
 - **Transcription Factor Enrichment**
   - Supports TRANSFAC and JASPAR, ENCODE, TRRUST, TF Perturbations followed by Expression, hFTarget, TFLink
-  - Enrichment dot plots and enrich term tables
+  - supports GSEA or over representation analysis
+  - Enrichment dot plots and enrich term tables , ridgeplot with GSEA option
 - **PCA Analysis (Simple Consensus Clustering)**
   - Principle components covering user selected variance is used to create sample clusters, select gene features and comparison pathway analysis
   - Visualizations: Contributing genes heatmap, sample correlation heatmap, dot plot of enrichment comparison between components, enrichment and contributing genes tables

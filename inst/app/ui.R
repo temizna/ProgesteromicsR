@@ -20,6 +20,7 @@ ui <- fluidPage(
                  selectInput("filter_cellline", "Filter by Cellline", choices = NULL, multiple = TRUE),
                  selectInput("filter_PR", "Filter by PR state", choices = NULL, multiple = TRUE),
                  selectInput("filter_ER", "Filter by ER state", choices = NULL, multiple = TRUE),
+                 selectInput("sample_select", "Select Individual Samples", choices = NULL, multiple = TRUE),
                  actionButton("run_filter", "FILTER!!"),
                  actionButton("deselect_all", "Deselect All Samples"),
                  downloadButton("download_sample_table", "Download Sample Table")
@@ -38,6 +39,21 @@ ui <- fluidPage(
                  plotOutput("geneExpressionPlot")
                )
              )
+    ),
+    tabPanel(
+      title = "Genes of Interest Heatmap",
+      sidebarLayout(
+        sidebarPanel(
+          fileInput("goi_file", "Upload Gene List (CSV, single column)"),
+          selectInput("goi_metadata_columns", "Select Metadata Columns", choices = c("treatment", "cellline", "dim", "ER","PR","batch"), multiple = TRUE),
+          checkboxInput("cluster_columns", "Cluster Columns", value = TRUE),
+          textInput("goi_heatmap_filename", "Download Filename", value = "GOI_heatmap.pdf"),
+          downloadButton("download_goi_heatmap", "Download Heatmap")
+        ),
+        mainPanel(
+          plotOutput("goi_heatmap")
+        )
+      )
     ),
     tabPanel("Quality Check", 
              sidebarLayout(
@@ -231,13 +247,20 @@ ui <- fluidPage(
                                "TF_Perturbations_Followed_by_Expression",
                                "hTFtarget",
                                "TFLink"), selected = NULL),
+                 selectInput("enrichment_method", "Select Enrichment Method:", choices = c("GSEA", "Over_representation")),
+                 selectInput("gene_direction", "Direction:", choices = c("Up", "Down", "Both")),
+                 sliderInput("lfc_threshold", "Log2 Fold Change Threshold:", min = 0, max = 4, value = 1, step = 0.25, ticks = TRUE),
+                 sliderInput("padj_threshold", "Adjusted P-Value Threshold:", min = 0, max = 0.5, value = 0.05, step = 0.01, ticks = TRUE),
                  sliderInput("tf.qval", "TF Q-value:", min = 0, max = 0.5, value = 0.1, step = 0.01, ticks = TRUE),
                  actionButton("run_tf_enrichment", "Run TF Enrichment"),
                  downloadButton("download_tf_dotplot", "Download Dot Plot"),
+                 downloadButton("download_tf_ridgeplot", "Download Ridge Plot"),
                  downloadButton("download_tf_results_table", "Download Table")
                ),
                mainPanel(
                  plotOutput("tf_dotplot"),
+                 br(),
+                 plotOutput("tf_ridgeplot"),
                  br(),
                  DT::DTOutput("tf_results_table")
                )
