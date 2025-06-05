@@ -124,19 +124,20 @@ mod_differential_expression <- function(input, output, session, filtered_data_rv
   }
 
   output$heatmapPlot <- renderPlot({
-    req(filtered_data_rv(), res_reactive(), input$cluster_columns)  # 👈 ensures reactivity
+    # include input$cluster_columns so it triggers reactivity even when FALSE
+    cluster <- isTRUE(input$cluster_columns)
+    req(filtered_data_rv(), res_reactive())
     
     filtered_data <- filtered_data_rv()
     top_n <- input$num_genes
     metadata_column <- input$metadata_column
-    cluster_columns <- isTRUE(input$cluster_columns)  # default FALSE-safe
     
     top_genes <- head(res_reactive()[order(res_reactive()$padj), ], top_n)
     expr <- log2(filtered_data$norm_counts[rownames(top_genes), , drop = FALSE] + 1)
     
     group_values <- filtered_data$samples[[metadata_column]]
     group_levels <- unique(group_values)
-    palette <- colorRampPalette(brewer.pal(8, "Set2"))(length(group_levels))
+    palette <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(length(group_levels))
     ha <- ComplexHeatmap::HeatmapAnnotation(
       df = data.frame(Group = group_values),
       col = list(Group = setNames(palette, group_levels))
@@ -147,7 +148,7 @@ mod_differential_expression <- function(input, output, session, filtered_data_rv
       name = "log2(norm counts)",
       top_annotation = ha,
       cluster_rows = TRUE,
-      cluster_columns = cluster_columns,
+      cluster_columns = cluster,
       show_column_names = FALSE,
       show_row_names = TRUE,
       row_names_gp = grid::gpar(fontsize = 4, fontface = "bold"),
@@ -155,6 +156,7 @@ mod_differential_expression <- function(input, output, session, filtered_data_rv
       column_title_gp = grid::gpar(fontface = "bold")
     ))
   })
+  
   
   
   # Download handler for heatmap plot
@@ -166,7 +168,7 @@ mod_differential_expression <- function(input, output, session, filtered_data_rv
       filtered_data <- filtered_data_rv()
       top_n <- input$num_genes
       metadata_column <- input$metadata_column
-      cluster_columns <- input$cluster_columns
+      cluster_columns <- isTRUE(input$cluster_columns)
       
       # Call the function to generate the heatmap plot
       heatmap_plot <- generate_heatmap_plot(

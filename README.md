@@ -1,11 +1,11 @@
-Package: RNAnalyzeR
-Title: A Comprehensive Shiny App for RNA-Seq Analysis
+Package: ProgesteromicsR 
+Title: A Comprehensive Shiny App for RNA-Seq Analysis of 219 breast cancer cell lines
 Version: 0.1.0
 Authors@R: 
     person(Nuri Alpay, Temiz, email = temizna@umn.edu, role = c("aut", "cre"))
 Description: 
-    RNAnalyzeR provides an interactive Shiny interface for complete RNA-Seq analysis,
-    including data upload, normalization, quality control, differential expression,
+    ProgesteromicsR provides an interactive Shiny interface for complete RNA-Seq analysis of 219 breast cancer cell lines,
+    including data normalization, quality control, differential expression,
     gene expression visualization, pathway analysis, and GSEA using CRAN and Bioconductor tools.
 License: MIT
 Encoding: UTF-8
@@ -52,8 +52,7 @@ VignetteBuilder: knitr
 
 # ProgesteromicsR 
 
-**ProgesterimicsRR** is a comprehensive Shiny-based application for end-to-end RNA-Seq data analysis of over 200 breast cancer cancer cell lines. The data comes preloaded. It provides an interactive GUI for both novice and advanced users to perform quality control, normalization, differential expression, pathway analysis, and gene set enrichment analysis (GSEA) with minimal coding.
-
+**ProgesteromicsR** is a comprehensive Shiny-based application for end-to-end RNA-Seq data analysis of over 200 breast cancer cancer cell lines. The data comes preloaded. It provides an interactive GUI for both novice and advanced users to perform quality control, normalization, differential expression, pathway analysis, and gene set enrichment analysis (GSEA) with no coding experience.
 ## ✨ Features
 
 - **Data Input**  
