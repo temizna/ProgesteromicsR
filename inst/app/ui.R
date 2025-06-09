@@ -14,10 +14,10 @@ ui <- fluidPage(
              sidebarLayout(
                sidebarPanel(
                  actionButton("select_all", "Select All Samples"),
-                 selectInput("filter_dim", "Filter by Dimension", choices = NULL, multiple = TRUE),
+                 selectInput("filter_dim", "Filter by Growth Condition", choices = NULL, multiple = TRUE),
                  selectInput("filter_treatment", "Filter by Treatment", choices = NULL, multiple = TRUE),
-                 selectInput("filter_batch", "Filter by Batch", choices = NULL, multiple = TRUE),
-                 selectInput("filter_cellline", "Filter by Cellline", choices = NULL, multiple = TRUE),
+                 #selectInput("filter_batch", "Filter by Batch", choices = NULL, multiple = TRUE),
+                 selectInput("filter_cellline", "Filter by Cell Line", choices = NULL, multiple = TRUE),
                  selectInput("filter_PR", "Filter by PR state", choices = NULL, multiple = TRUE),
                  selectInput("filter_ER", "Filter by ER state", choices = NULL, multiple = TRUE),
                  selectInput("sample_select", "Select Individual Samples", choices = NULL, multiple = TRUE),
@@ -45,7 +45,7 @@ ui <- fluidPage(
       sidebarLayout(
         sidebarPanel(
           fileInput("goi_file", "Upload Gene List (CSV, single column)"),
-          selectInput("goi_metadata_columns", "Select Metadata Columns", choices = c("treatment", "cellline", "dim", "ER","PR","batch"), multiple = TRUE),
+          selectInput("goi_metadata_columns", "Select Variable Columns", choices = c("treatment", "cellline", "dim", "ER","PR","batch"), multiple = TRUE),
           checkboxInput("cluster_columns", "Cluster Columns", value = TRUE),
           textInput("goi_heatmap_filename", "Download Filename", value = "GOI_heatmap.pdf"),
           downloadButton("download_goi_heatmap", "Download Heatmap")
@@ -65,14 +65,16 @@ ui <- fluidPage(
                  downloadButton("download_qc_plot", "Download Plot")
                ),
                mainPanel(
-                 plotOutput("qcPlot")
+                 plotOutput("qcPlot"),  
+                 br(),
+                 textOutput("qcPlotDescription")
                )
              )
     ),  
     tabPanel("Differential Expression",
              sidebarLayout(
                sidebarPanel(
-                 selectInput("metadata_column", "Metadata Column:", choices = NULL),
+                 selectInput("metadata_column", "Variable to test Column:", choices = NULL),
                  selectInput("reference_condition", "Reference Condition:", choices = NULL),
                  selectInput("test_condition", "Test Condition:", choices = NULL),
                  sliderInput("lfc_threshold", "Log2 Fold Change Threshold:", min = 0, max = 4, value = 1, step = 0.25, ticks = TRUE),
@@ -112,10 +114,10 @@ ui <- fluidPage(
              sidebarLayout(
                sidebarPanel(
                  textInput("crossplot_gene_label", "Enter Gene(s) of Interest (space-separated):", value = ""),
-                 selectInput("metadata_column_x", "X-axis Metadata Column:", choices = NULL),
+                 selectInput("metadata_column_x", "X-axis Variable to test:", choices = NULL),
                  selectInput("reference_condition_x", "X-axis Reference Condition:", choices = NULL),
                  selectInput("test_condition_x", "X-axis Test Condition:", choices = NULL),
-                 selectInput("metadata_column_y", "Y-axis Metadata Column:", choices = NULL),
+                 selectInput("metadata_column_y", "Y-axis Variable to test:", choices = NULL),
                  selectInput("reference_condition_y", "Y-axis Reference Condition:", choices = NULL),
                  selectInput("test_condition_y", "Y-axis Test Condition:", choices = NULL),
                  selectInput("cp_pathway_db", "Select Pathway Database:", choices = c("enrichGO", "enrichKEGG", "enrichPathway", "enrichDO")),
@@ -140,7 +142,7 @@ ui <- fluidPage(
              sidebarLayout(
                sidebarPanel(
                  checkboxInput("gsea_split_dotplot", "Split Dot Plot by Activation State", value = TRUE),
-                 selectInput("gsea_color_scale", "Dot Plot Color By:", choices = c("p.adjust", "pvalue","qvalue"), selected = "pvalue"),
+                 selectInput("gsea_color_scale", "Dot Plot Color By:", choices = c("p.adjust", "pvalue","qvalue","NES"), selected = "pvalue"),
                  selectInput("gsea_db", "Select Database:", choices = c("GO", "KEGG", "Reactome", "Hallmark","Cancer Cell Atlas",
                                                                         "Cancer Gene Neighbourhoods", "Cancer Modules","Txn Factor Targets")),
                  
@@ -247,7 +249,7 @@ ui <- fluidPage(
                                "TF_Perturbations_Followed_by_Expression",
                                "hTFtarget",
                                "TFLink"), selected = NULL),
-                 selectInput("enrichment_method", "Select Enrichment Method:", choices = c("GSEA", "Over_representation")),
+                 selectInput("enrichment_method", "Select Enrichment Method:", choices = c("Over_representation","GSEA")),
                  selectInput("gene_direction", "Direction:", choices = c("Up", "Down", "Both")),
                  sliderInput("lfc_threshold", "Log2 Fold Change Threshold:", min = 0, max = 4, value = 1, step = 0.25, ticks = TRUE),
                  sliderInput("padj_threshold", "Adjusted P-Value Threshold:", min = 0, max = 0.5, value = 0.05, step = 0.01, ticks = TRUE),

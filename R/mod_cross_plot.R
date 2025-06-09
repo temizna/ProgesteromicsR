@@ -27,8 +27,8 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
   observe({
     req(filtered_data_rv()$samples)
     samples<-filtered_data_rv()$samples
-    cols <- colnames(samples)
-    print(cols)
+    cols <- setdiff(colnames(samples),"batch")
+    #print(cols)
     updateSelectInput(session, "metadata_column_x", choices = cols)
     updateSelectInput(session, "metadata_column_y", choices = cols)
   })
@@ -89,16 +89,16 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
     if (!contrast_exists_x) {
       # Run DESeq2 for the X contrast
       design_formula_x <- as.formula(paste("~", input$metadata_column_x))
-      dds_x <- DESeq2::DESeqDataSetFromMatrix(countData = filtered_data$counts, colData = filtered_data$samples, design = design_formula_x)
-      dds_x <- DESeq2::DESeq(dds_x)  # Run DESeq2 analysis for X contrast
+      dds_x <- suppressMessages({DESeq2::DESeqDataSetFromMatrix(countData = filtered_data$counts, colData = filtered_data$samples, design = design_formula_x)})
+      dds_x <- suppressMessages({DESeq2::DESeq(dds_x) }) # Run DESeq2 analysis for X contrast
     } else { 
       dds_x<-filtered_dds_rv()
       }
     if (!contrast_exists_y) {
       # Run DESeq2 for the Y contrast
       design_formula_y <- as.formula(paste("~", input$metadata_column_y))
-      dds_y <- DESeq2::DESeqDataSetFromMatrix(countData = filtered_data$counts, colData = filtered_data$samples, design = design_formula_y)
-      dds_y <- DESeq2::DESeq(dds_y)  # Run DESeq2 analysis for Y contrast
+      dds_y <- suppressMessages({DESeq2::DESeqDataSetFromMatrix(countData = filtered_data$counts, colData = filtered_data$samples, design = design_formula_y)})
+      dds_y <- suppressMessages({DESeq2::DESeq(dds_y) }) # Run DESeq2 analysis for Y contrast
     } else {
       dds_y<-filtered_dds_rv()
     }
@@ -142,14 +142,14 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
     if (length(highlight_genes) == 1 && highlight_genes == "") highlight_genes <- character(0)
     # Combine top genes and highlighted genes
     label_genes <- union(top_genes, highlight_genes)
-    print(label_genes)
+    #print(label_genes)
     # Label genes based on this combined list
     df$label <- ifelse(df$gene %in% label_genes, df$gene, NA)
     df<-df[order(df$padj_x), ]
     # Update crossplot data
     crossplot_data(df)  # Update the reactive value with the new data
-    print("Updated Data with Labels:")
-    print(head(df))
+    #print("Updated Data with Labels:")
+    #print(head(df))
     
   })
 
@@ -209,11 +209,11 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
   output$crossPlot <- renderPlot({
     req(crossplot_data())
     df <- crossplot_data()
-    print(head(df$label))
-    p <- generate_cross_plot(df, input$crossplot_gene_count, 
+    #print(head(df$label))
+    p <- suppressMessages({generate_cross_plot(df, input$crossplot_gene_count, 
                              input$test_condition_x, input$reference_condition_x, 
-                             input$test_condition_y, input$reference_condition_y)
-    print(p)
+                             input$test_condition_y, input$reference_condition_y)})
+    print(suppressMessages({p}))
   })
   
   # Download handler for the cross plot
@@ -251,9 +251,9 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
     df=df[!(df$category=="Other"),]
     # Convert gene symbols to ENTREZ IDs
     if (is_symbol(df$gene)) {
-      df_ids <- bitr(df$gene, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = orgdb)
+      df_ids <- suppressMessages({bitr(df$gene, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = orgdb)})
     } else {
-      df_ids <- bitr(df$gene, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = orgdb)
+      df_ids <- suppressMessages({bitr(df$gene, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = orgdb)})
     }
     
     # Merge the data with the ENTREZ IDs
@@ -273,7 +273,57 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
       filter(!is.na(log2FoldChange_x) & !is.na(ENTREZID))
     
     # Perform pathway analysis using compareCluster
-    formula_res <- compareCluster(ENTREZID ~ category, data = df_merged2, fun = input$cp_pathway_db)
+    # Assume orgdb has already been defined with get_orgdb(species)
+    method <- input$cp_pathway_db
+    if (method == "enrichGO") {
+      formula_res <- clusterProfiler::compareCluster(
+        ENTREZID ~ category,
+        data = df_merged2,
+        fun = "enrichGO",
+        OrgDb = orgdb,
+        keyType = "ENTREZID",
+        ont = "BP",
+        pAdjustMethod = "BH",
+        pvalueCutoff = 0.05,
+        qvalueCutoff = 0.2,
+        readable = TRUE
+      )
+    } else if (method == "groupGO") {
+      formula_res <- clusterProfiler::compareCluster(
+        ENTREZID ~ category,
+        data = df_merged2,
+        fun = "groupGO",
+        OrgDb = orgdb,
+        ont = "BP",
+        keyType = "ENTREZID",
+        readable = TRUE
+      )
+    } else if (method == "enrichKEGG") {
+      kegg_sp <- if (species == "Homo sapiens") "hsa" else "mmu"
+      formula_res <- clusterProfiler::compareCluster(
+        ENTREZID ~ category,
+        data = df_merged2,
+        fun = "enrichKEGG",
+        organism = kegg_sp,
+        pvalueCutoff = 0.05,
+        qvalueCutoff = 0.2
+      )
+    } else if (method == "enrichPathway") {
+      reactome_code <- get_reactome_code(species)
+      formula_res <- clusterProfiler::compareCluster(
+        ENTREZID ~ category,
+        data = df_merged2,
+        fun = ReactomePA::enrichPathway,
+        organism = reactome_code,
+        pvalueCutoff = 0.05,
+        qvalueCutoff = 0.2,
+        readable = TRUE
+      )
+    } else {
+      showNotification("Unsupported enrichment method selected.", type = "error")
+      return(NULL)
+    }
+    
     
     # Check if formula_res is NULL or empty
     if (is.null(formula_res) || nrow(formula_res) == 0) {

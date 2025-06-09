@@ -31,7 +31,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
   observe({
     req(filtered_data_rv())
     filtered_data<-filtered_data_rv()
-    choices <- colnames(filtered_data$samples)
+    choices <- setdiff(colnames(filtered_data$samples),"batch")
     updateSelectInput(session, "group_select_geneexpr", choices = choices)
   })
   generate_gene_expression_plot <- function(filtered_data, selected_genes, group_col, species) {

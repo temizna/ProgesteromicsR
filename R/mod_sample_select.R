@@ -22,7 +22,7 @@ mod_sample_select <- function(input, output, session, dds_rv, loaded_data_rv, fi
     samples <- loaded_data_rv()$samples
     updateSelectInput(session, "filter_dim", choices = unique(samples$dimension))
     updateSelectInput(session, "filter_treatment", choices = unique(samples$treatment))
-    updateSelectInput(session, "filter_batch", choices = unique(samples$batch))
+   # updateSelectInput(session, "filter_batch", choices = unique(samples$batch))
     updateSelectInput(session, "filter_cellline", choices = unique(samples$cellline))
     updateSelectInput(session, "filter_PR", choices = unique(samples$PR))
     updateSelectInput(session, "filter_ER", choices = unique(samples$ER))

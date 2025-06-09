@@ -30,7 +30,7 @@ mod_differential_expression <- function(input, output, session, filtered_data_rv
   observe({
     req(filtered_data_rv())
     filtered_data<-filtered_data_rv()
-    cols <- colnames(filtered_data$samples)
+    cols <- setdiff(colnames(filtered_data$samples),"batch")
     updateSelectInput(session, "metadata_column", choices = cols)
   })
 
@@ -56,7 +56,7 @@ mod_differential_expression <- function(input, output, session, filtered_data_rv
     design(dds) <- as.formula(paste("~", input$metadata_column))
 
     dds <- DESeq(dds)
-    res <- results(dds, contrast = c(input$metadata_column, input$test_condition, input$reference_condition))
+    res <- suppressMessages({results(dds, contrast = c(input$metadata_column, input$test_condition, input$reference_condition))})
 
     res$symbol <- rownames(res)
 

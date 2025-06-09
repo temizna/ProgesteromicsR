@@ -26,7 +26,8 @@ mod_qc_plot <- function(input, output, session, filtered_data_rv) {
   # Update QC group selection dropdown based on design metadata
   observe({
     req(filtered_data_rv()$samples)
-    updateSelectInput(session, "group_select_qc", choices = colnames(filtered_data_rv()$samples))
+    cols <- setdiff(colnames(filtered_data_rv()$samples), "batch")
+    updateSelectInput(session, "group_select_qc", choices = cols)
   })
   generate_qc_plot <- function() {
     req(input$qc_plot_type, filtered_data_rv())
@@ -43,7 +44,7 @@ mod_qc_plot <- function(input, output, session, filtered_data_rv) {
     
     # Generate Plot Based on QC Plot Type
     if (input$qc_plot_type == "PCA") {
-      expr <- log2(data$norm_counts + 1)
+      expr <- log2(filtered_data$norm_counts + 1)
       expr <- expr[apply(expr, 1, function(x) var(x, na.rm = TRUE) > 0), , drop = FALSE]
       pca <- prcomp(t(expr), scale. = TRUE) 
       percentVar <- round(100 * (pca$sdev^2 / sum(pca$sdev^2)), 1)
@@ -97,7 +98,17 @@ mod_qc_plot <- function(input, output, session, filtered_data_rv) {
   }
   
   output$qcPlot <- renderPlot({
-    generate_qc_plot() 
+    suppressMessages({generate_qc_plot()})
+  })
+  output$qcPlotDescription <- renderText({
+    switch(input$qc_plot_type,
+           "PCA" = "Principal Component Analysis (PCA) highlights the variation in gene expression across samples.",
+           "Sample Distance" = "This heatmap shows pairwise distances between samples based on log2-normalized expression. 
+           It is a measure of similarity between samples.",
+           "Mean-Variance" = "This plot depicts the relationship between mean expression and variance across genes.",
+           "Variance Histogram" = "This histogram displays the distribution of gene expression variances by group.",
+           "Select a QC plot to view its description."
+    )
   })
 
   # Download handler for QC plot
