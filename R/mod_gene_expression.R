@@ -23,6 +23,7 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom tidyselect all_of
 #' @importFrom shiny validate need
+#' @importFrom stats TukeyHSD  aov complete.cases median p.adjust reorder setNames
 #' @importFrom utils install.packages
 #' @export
 mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
@@ -121,6 +122,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
     plot
   })
   
+ 
   # Download gene expression plot
   output$download_gene_plot <- downloadHandler(
     filename = function() {
@@ -128,6 +130,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
     },
     content = function(file) {
       # Generate the plot using the generate_gene_expression_plot function
+      req(filtered_data_rv())
       filtered_data <- filtered_data_rv()
       genes_raw <- input$gene_select
       selected_genes <- unlist(stringr::str_split(genes_raw, "[\\s,]+"))
@@ -145,6 +148,119 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
     }
   )
   
+  compute_anova_table <- function(filtered_data, selected_genes, group_col, species) {
+    available_genes <- rownames(filtered_data$norm_counts)
+    if (is_ensembl_id(available_genes)) {
+      symbol_to_ens <- convert_symbol_to_ensembl(selected_genes, species)
+      matched_symbols <- names(symbol_to_ens)
+      found_genes <- unname(symbol_to_ens)
+      found_genes <- found_genes[!is.na(found_genes) & found_genes %in% available_genes]
+      matched_symbols <- matched_symbols[!is.na(found_genes)]
+      names(matched_symbols) <- found_genes
+      gene_labels <- matched_symbols
+    } else {
+      found_genes <- selected_genes[selected_genes %in% available_genes]
+      gene_labels <- setNames(found_genes, found_genes)
+    }
+    
+    expr_mat <- filtered_data$norm_counts[found_genes, , drop = FALSE]
+    expr_df <- as.data.frame(t(expr_mat))
+    expr_df$Sample <- rownames(expr_df)
+    df <- cbind(expr_df, filtered_data$samples[rownames(expr_df), , drop = FALSE])
+    
+    long_df <- tidyr::pivot_longer(
+      df, cols = all_of(found_genes), names_to = "Gene", values_to = "Expression"
+    )
+    long_df$Group <- df[[group_col]][match(long_df$Sample, df$Sample)]
+    long_df$Expression <- as.numeric(long_df$Expression)
+    long_df$log2_Expression <- log2(long_df$Expression + 1)
+    long_df$Gene <- gene_labels[long_df$Gene]
+    long_df$Gene[is.na(long_df$Gene)] <- long_df$Gene[is.na(long_df$Gene)]
+    
+    all_results <- lapply(unique(long_df$Gene), function(gene) {
+      gene_data <- subset(long_df, Gene == gene)
+      fit <- aov(log2_Expression ~ Group, data = gene_data)
+      anova_p <- summary(fit)[[1]]["Group", "Pr(>F)"]
+      tukey <- tryCatch(TukeyHSD(fit, "Group"), error = function(e) NULL)
+      if (is.null(tukey)) return(NULL)
+      
+      pairwise <- as.data.frame(tukey$Group)
+      pairwise$Comparison <- rownames(pairwise)
+      pairwise$Gene <- gene
+      pairwise$FDR <- p.adjust(pairwise$`p adj`, method = "fdr")
+      pairwise[, c("Gene", "Comparison", "diff", "lwr", "upr", "p adj", "FDR")]
+    })
+    
+    result_df <- do.call(rbind, all_results)
+    colnames(result_df) <- c("Gene", "Comparison", "Difference", "Lower CI", "Upper CI", "P.Value", "FDR")
+    result_df$P.Value <- signif(result_df$P.Value, 4)
+    result_df$FDR <- signif(result_df$FDR, 4)
+    result_df
+  }
+  
+  output$geneExpressionStats <- DT::renderDT({
+    req(input$gene_select, input$group_select_geneexpr, filtered_data_rv()$species,filtered_data_rv())
+    filtered_data<-filtered_data_rv()
+    genes_raw <- input$gene_select
+    selected_genes <- unlist(stringr::str_split(genes_raw, "[\\s,]+"))
+    selected_genes <- trimws(selected_genes)
+    selected_genes <- selected_genes[selected_genes != ""]
+    
+    df <- compute_anova_table(
+      filtered_data = filtered_data,
+      selected_genes = selected_genes,
+      group_col = input$group_select_geneexpr,
+      species = filtered_data_rv()$species
+    )
+    
+    # Format all numeric columns for readability
+    numeric_cols <- sapply(df, is.numeric)
+    df[numeric_cols] <- lapply(df[numeric_cols], function(col) {
+      ifelse(abs(col) < 0.001, formatC(col, format = "e", digits = 2), round(col, 3))
+    })
+    
+    DT::datatable(
+      df,
+      options = list(pageLength = 10, autoWidth = TRUE),
+      rownames = FALSE
+    ) %>%
+      DT::formatStyle(
+        "FDR",
+        backgroundColor = DT::styleInterval(0.05, c("#ffcccc", NA)),
+        fontWeight = DT::styleInterval(0.05, c("bold", "normal"))
+      ) %>%
+      DT::formatStyle(
+        "Gene",
+        fontWeight = "bold"
+      )
+  })
+  
+  output$download_gene_stats <- downloadHandler(
+    filename = function() {
+      paste0("gene_expression_anova_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      genes_raw <- input$gene_select
+      selected_genes <- unlist(stringr::str_split(genes_raw, "[\\s,]+"))
+      selected_genes <- trimws(selected_genes)
+      selected_genes <- selected_genes[selected_genes != ""]
+      
+      df <- compute_anova_table(
+        filtered_data = filtered_data_rv,
+        selected_genes = selected_genes,
+        group_col = input$group_select_geneexpr,
+        species = filtered_data_rv$species
+      )
+      
+      # Apply same formatting as DT table
+      numeric_cols <- sapply(df, is.numeric)
+      df[numeric_cols] <- lapply(df[numeric_cols], function(col) {
+        ifelse(abs(col) < 0.001, formatC(col, format = "e", digits = 2), round(col, 3))
+      })
+      
+      write.csv(df, file, row.names = FALSE)
+    }
+  )
   
   
 }

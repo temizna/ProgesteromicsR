@@ -63,6 +63,7 @@ VignetteBuilder: knitr
 
 - **Gene Expression Visualization**  
   - Boxplots of selected genes grouped by metadata categories
+  - Table of one-way ANOVA comparison between groups for selected genes followed by Tukey's HSD test.
 
 - **Quality Control (QC)**  
   - PCA, sample distance heatmaps, mean-variance plots, variance histograms

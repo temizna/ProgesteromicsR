@@ -33,10 +33,13 @@ ui <- fluidPage(
                sidebarPanel(
                  textInput("gene_select", "Enter Gene(s) of Interest (space-separated):", value = ""),
                  selectInput("group_select_geneexpr", "Group by:", choices = NULL),
-                 downloadButton("download_gene_plot", "Download Plot")
+                 downloadButton("download_gene_plot", "Download Plot"),
+                 downloadButton("download_gene_stats", "Download ANOVA Table")
                ),
                mainPanel(
-                 plotOutput("geneExpressionPlot")
+                 plotOutput("geneExpressionPlot"),
+                 br(),
+                 DT::dataTableOutput("geneExpressionStats")
                )
              )
     ),
