@@ -125,7 +125,9 @@ BiocManager::install(c(
 
 # Install pathfindR (if not already)
 install.packages("pathfindR")
-
+#install devtools if not already installed
+install.packages("devtools")
+library("devtools")
 # Clone or download this repo, then from root directory:
 devtools::install_github("temizna/ProgesteromicsR")
 ```
