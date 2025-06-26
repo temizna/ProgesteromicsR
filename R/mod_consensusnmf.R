@@ -1,4 +1,4 @@
-#' Consensus Clustering and Classification Module Server with NMF (Enhanced Styling + coefmap + marker_heatmap fixed)
+#' Consensus Clustering and Classification with PCA
 #'
 #' @param input Shiny input object
 #' @param output Shiny output object
@@ -11,7 +11,6 @@
 #'   }
 #'
 #' @return None (called for its side effects to render plots and outputs in Shiny)
-#' @importFrom NMF nmf nmfEstimateRank basis extractFeatures coefmap consensusmap predict
 #' @importFrom ComplexHeatmap Heatmap draw HeatmapAnnotation
 #' @importFrom clusterProfiler compareCluster enrichGO enrichKEGG enrichDO groupGO bitr
 #' @importFrom ReactomePA enrichPathway

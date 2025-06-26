@@ -15,7 +15,7 @@
 #' @importFrom DT datatable
 #' @importFrom utils head read.csv write.csv str
 #' @importFrom stats as.formula dist model.matrix prcomp quantile relevel var na.omit cor
-#' @importFrom grDevices dev.off pdf colorRampPalette
+#' @importFrom grDevices dev.off pdf colorRampPalette svg
 #' @importFrom grid gpar
 #' @importFrom shiny isolate req renderPlot updateSelectInput renderImage showNotification downloadHandler renderPrint
 #' @importFrom org.Hs.eg.db org.Hs.eg.db

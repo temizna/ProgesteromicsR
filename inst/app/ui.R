@@ -215,9 +215,9 @@ ui <- fluidPage(
                  br(),
                  plotOutput("treePlot"),
                  br(),
-                 plotOutput("upsetPlot"),
-                 br(),
-                 plotOutput("keggPathwayImage")
+                 plotOutput("upsetPlot")
+                # br(),
+                # plotOutput("keggPathwayImage")
                )
              )
     ),

@@ -2,12 +2,15 @@
 #'
 #' Upload gene list and visualize as heatmap using user-selected metadata columns.
 #'
-#' @param input, output, session Standard Shiny module params
+#' @param input Standard Shiny module params
+#' @param output Standard Shiny module params
+#' @param session Standard Shiny module params
 #' @param filtered_data_rv reactiveValues with norm_counts, samples, species
 #' @import ComplexHeatmap
 #' @importFrom shiny req fileInput renderPlot downloadHandler selectInput checkboxInput uiOutput
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices pdf dev.off
+#' @importFrom utils read.table
 #' @export
 mod_goi_heatmap <- function(input, output, session, filtered_data_rv) {
   goi_heatmap_data <- reactive({
@@ -100,9 +103,9 @@ mod_goi_heatmap <- function(input, output, session, filtered_data_rv) {
       ext <- tools::file_ext(file)
       if (ext == "svg") svg(file) else if (ext == "pdf") pdf(file) else stop("Unsupported file type")
       ComplexHeatmap::draw(ComplexHeatmap::Heatmap(
-        goi_expr_rv(),
+        heatmap_data$expr,
         name = "log2(norm counts)",
-        top_annotation = goi_ha_rv(),
+        top_annotation = heatmap_data$ha,
         cluster_rows = TRUE,
         cluster_columns = isTRUE(input$cluster_columns),
         show_column_names = FALSE,

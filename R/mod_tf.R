@@ -7,8 +7,8 @@
 #' @param input Shiny input object
 #' @param output Shiny output object
 #' @param session Shiny session object
-#' @param geneList_rv Reactive value containing the gene list (log2FC vector) for enrichment
-#' @param tf_enrichment_result reactive data containing the tf enrichment results
+#' @param res_reactive Reactive value containing the gene list (log2FC vector) for enrichment
+#' @param filtered_data_rv reactive list containing data
 #' @importFrom gson read.gmt
 #' @importFrom dplyr left_join
 #' @importFrom vroom vroom

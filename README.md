@@ -1,6 +1,6 @@
 Package: ProgesteromicsR 
 Title: A Comprehensive Shiny App for RNA-Seq Analysis of 219 breast cancer cell lines
-Version: 0.4.0
+Version: 0.5.0
 Authors@R: 
     person(Nuri Alpay, Temiz, email = temizna@umn.edu, role = c("aut", "cre"))
 Description: 
@@ -28,7 +28,6 @@ Imports:
     DT,
     RColorBrewer,
     DESeq2,
-    GEOquery,
     Biobase,
     clusterProfiler,
     enrichplot,
@@ -36,7 +35,6 @@ Imports:
     msigdbr,
     ReactomePA,
     pathview,
-    pathfindR,
     AnnotationDbi,
     org.Hs.eg.db,
     org.Mm.eg.db

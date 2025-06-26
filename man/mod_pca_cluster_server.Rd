@@ -2,7 +2,7 @@
 % Please edit documentation in R/mod_consensusnmf.R
 \name{mod_pca_cluster_server}
 \alias{mod_pca_cluster_server}
-\title{Consensus Clustering and Classification Module Server with NMF (Enhanced Styling + coefmap + marker_heatmap fixed)}
+\title{Consensus Clustering and Classification with PCA}
 \usage{
 mod_pca_cluster_server(input, output, session, filtered_data_rv)
 }
@@ -24,5 +24,5 @@ mod_pca_cluster_server(input, output, session, filtered_data_rv)
 None (called for its side effects to render plots and outputs in Shiny)
 }
 \description{
-Consensus Clustering and Classification Module Server with NMF (Enhanced Styling + coefmap + marker_heatmap fixed)
+Consensus Clustering and Classification with PCA
 }

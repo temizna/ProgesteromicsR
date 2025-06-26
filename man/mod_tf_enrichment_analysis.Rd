@@ -19,9 +19,9 @@ mod_tf_enrichment_analysis(
 
 \item{session}{Shiny session object}
 
-\item{geneList_rv}{Reactive value containing the gene list (log2FC vector) for enrichment}
+\item{res_reactive}{Reactive value containing the gene list (log2FC vector) for enrichment}
 
-\item{tf_enrichment_result}{reactive data containing the tf enrichment results}
+\item{filtered_data_rv}{reactive list containing data}
 }
 \description{
 This module allows users to perform transcription factor enrichment analysis

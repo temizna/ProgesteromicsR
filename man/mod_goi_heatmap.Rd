@@ -7,20 +7,14 @@
 mod_goi_heatmap(input, output, session, filtered_data_rv)
 }
 \arguments{
-\item{input}{Shiny input object}
+\item{input}{Standard Shiny module params}
 
-\item{output}{Shiny output object}
+\item{output}{Standard Shiny module params}
 
-\item{session}{Shiny session object}
+\item{session}{Standard Shiny module params}
 
-\item{filtered_data_rv}{A reactiveValues list containing:
-\itemize{
-\item \code{norm_counts}: normalized gene expression matrix (genes x samples)
-\item \code{samples}: metadata for samples
-\item \code{species}: species name
-}}
+\item{filtered_data_rv}{reactiveValues with norm_counts, samples, species}
 }
 \description{
-Allows the user to upload a gene list and visualize expression as a heatmap
-using \code{filtered_data_rv$norm_counts}.
+Upload gene list and visualize as heatmap using user-selected metadata columns.
 }

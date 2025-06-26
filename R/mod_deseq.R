@@ -24,6 +24,7 @@
 #' @importFrom shiny isolate req renderPlot renderImage showNotification downloadHandler renderPrint
 #' @importFrom org.Hs.eg.db org.Hs.eg.db
 #' @importFrom shinythemes shinytheme
+#' @importFrom graphics abline
 #' @export
 mod_differential_expression <- function(input, output, session, filtered_data_rv, filtered_dds_rv, res_reactive) {
 
