@@ -83,7 +83,7 @@ VignetteBuilder: knitr
 - **Pathway Analysis**  
   - GO, KEGG, Reactome enrichment using clusterProfiler  
   - Visualizations: dot, cnet, circular, emap, heatmap, tree, upset plots  
-  - KEGG pathway download (no-rendering)  with `pathfindR` + gene heatmaps
+  - KEGG pathway download (no-rendering)  
 
 - **GSEA (Gene Set Enrichment Analysis)**  
   - Supports MSigDB collections: Hallmark, GO, KEGG, Reactome, Cancer Cell Atlas, Cancer Modules, Txn factor Targets  
@@ -107,7 +107,7 @@ VignetteBuilder: knitr
 
 ## 📦 Installation
 
-Install required CRAN and Bioconductor dependencies before installing RNAnalyzeR:
+Install required CRAN and Bioconductor dependencies before installing ProgesteromicsR:
 
 ```r
 # Install Bioconductor manager
@@ -121,13 +121,11 @@ BiocManager::install(c(
   "org.Hs.eg.db", "org.Mm.eg.db", "AnnotationDbi"
 ))
 
-# Install pathfindR (if not already)
-install.packages("pathfindR")
 #install devtools if not already installed
 install.packages("devtools")
 library("devtools")
 # Clone or download this repo, then from root directory:
-devtools::install_github("temizna/ProgesteromicsR")
+devtools::install_github("temizna/ProgesteromicsR", force=TRUE)
 ```
 
 ## 🚀 Running the App

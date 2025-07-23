@@ -56,11 +56,11 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
     # Only show the notification once when entering the "Cross Plot" tab
     if (is.null(input$run_crossplot)) return(NULL)
     
-    showNotification(
-      "Please make sure you have entered your desired genes (space separated) to be displayed on the plots before you hit run crossplot button.",
-      type = "warning",  # Type of notification, can be "warning", "error", "message", "success"
-      duration = NULL    # Duration NULL means it will stay until dismissed
-    )
+    # showNotification(
+    #   "Please make sure you have entered your desired genes (space separated) to be displayed on the plots before you hit run crossplot button.",
+    #   type = "warning",  # Type of notification, can be "warning", "error", "message", "success"
+    #   duration = NULL    # Duration NULL means it will stay until dismissed
+    # )
   })
   # Observing when the cross plot button is clicked
   observeEvent(input$run_crossplot, {

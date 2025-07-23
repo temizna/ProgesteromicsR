@@ -2,9 +2,9 @@
 #'
 #' Upload gene list and visualize as heatmap using user-selected metadata columns.
 #'
-#' @param input Standard Shiny module params
-#' @param output Standard Shiny module params
-#' @param session Standard Shiny module params
+#' @param input Shiny input object
+#' @param output Shiny output object
+#' @param session Shiny session object
 #' @param filtered_data_rv reactiveValues with norm_counts, samples, species
 #' @import ComplexHeatmap
 #' @importFrom shiny req fileInput renderPlot downloadHandler selectInput checkboxInput uiOutput

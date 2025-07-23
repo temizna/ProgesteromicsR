@@ -1,4 +1,5 @@
 server<-function (input, output, session){
+  #options(shiny.error = browser)
 gsea_result_rv <- reactiveVal()
 res_reactive <- reactiveVal()
 heatmap_data_reactive <- reactiveVal()
