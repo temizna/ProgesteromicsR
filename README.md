@@ -201,15 +201,14 @@ run_app <- function() {
   library(enrichplot)
   library(GEOquery)
   library(pathview)
-  library(pathfindR)
   library(ComplexHeatmap)
   library(org.Hs.eg.db)
   library(org.Mm.eg.db)
   library(msigdbr)
 
   shiny::shinyApp(
-    ui = RNAnalyzeR::app_ui(),
-    server = RNAnalyzeR::app_server
+    ui = ProgesteromicsR::app_ui(),
+    server = ProgesteromicsR::app_server
   )
 }
 ```

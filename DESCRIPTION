@@ -1,6 +1,6 @@
 Package: ProgesteromicsR
 Title: A Comprehensive Shiny App for RNA-Seq Analysis of breast cancer cell line data
-Version: 0.5.0
+Version: 0.6.0
 Authors@R: person("Alpay", "Temiz", email = "temizna@umn.edu", role = c("aut", "cre"))
 Description: 
     ProgestromicsR provides an interactive Shiny interface for complete RNA-Seq analysis of 

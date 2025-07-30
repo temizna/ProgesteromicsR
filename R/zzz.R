@@ -2,7 +2,7 @@
   bioc_required <- c(
     "DESeq2", "org.Hs.eg.db","clusterProfiler", 
     "enrichplot",  
-    "ComplexHeatmap", "msigdbr", "ReactomePA", "pathfindR"
+    "ComplexHeatmap", "msigdbr", "ReactomePA"
   )
 
   cran_required <- c("ggplot2", "reshape2", "dplyr", "tibble", "stringr", 
