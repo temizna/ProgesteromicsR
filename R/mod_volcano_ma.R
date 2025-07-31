@@ -146,7 +146,7 @@ mod_volcano_ma_plot <- function(input, output, session, res_reactive, filtered_d
       if (is_ensembl_id(res$symbol)) {
         label_genes <- convert_ensembl_to_symbol(label_genes, filtered_data_rv()$species)
       }
-      p <- generate_volcano_plot(res, input$volcano_lfc, input$volcano_padj, label_genes, top_genes)
+      p <- generate_volcano_plot(res,label_genes, top_genes, input$volcano_lfc, input$volcano_padj)
       print(p)
       dev.off()
     }

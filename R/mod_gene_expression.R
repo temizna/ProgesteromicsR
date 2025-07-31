@@ -241,19 +241,33 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
     },
     content = function(file) {
       tryCatch({
-        print("Running download handler")
-      req(filtered_data_rv(), input$gene_select, input$group_select_geneexpr)
-      filtered_data<-filtered_data_rv()
-      genes_raw <- input$gene_select
+      print("Running download handler")
+        fd <- isolate(filtered_data_rv())
+        genes_raw <- isolate(input$gene_select)
+        group <- isolate(input$group_select_geneexpr)
+        req(fd, genes_raw, group)
+        
+        selected_genes <- unlist(stringr::str_split(genes_raw, "[\\s,]+"))
+        selected_genes <- trimws(selected_genes)
+        selected_genes <- selected_genes[selected_genes != ""]
+        
+        print(fd$species)
+        
+        df <- compute_anova_table(
+          data_list = fd,
+          selected_genes = selected_genes,
+          group_col = group,
+          species = fd$species
+        )
       selected_genes <- unlist(stringr::str_split(genes_raw, "[\\s,]+"))
       selected_genes <- trimws(selected_genes)
       selected_genes <- selected_genes[selected_genes != ""]
-      print(filtered_data$species)
+      print(fd$species)
       df <- compute_anova_table(
-        data_list = filtered_data,
+        data_list = fd,
         selected_genes = selected_genes,
         group_col = input$group_select_geneexpr,
-        species = filtered_data$species
+        species = fd$species
       )
       print("Writing CSV")
       # Apply same formatting as DT table
@@ -273,7 +287,4 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
   
   
 }
-
-# === Register in server ===
-# mod_gene_expression_plot(input, output, session, data)
 

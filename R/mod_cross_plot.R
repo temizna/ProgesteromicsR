@@ -440,14 +440,14 @@ mod_cross_plot <- function(input, output, session, filtered_data_rv, filtered_dd
 
   output$download_overlap_genes <- downloadHandler(
     filename = function() {
-      paste0("cross_plot_overlap_genes_", Sys.Date(),"_",input$test_condition_x,"_",input$test_condition_y, ".csv")
+      paste0("cross_plot_overlap_genes_", Sys.Date(), "_", input$test_condition_x, "_", input$test_condition_y, ".csv")
     },
-    content = function(file) {
+    content = local(function(file) {
       overlaps <- overlapping_genes()
       up <- data.frame(Gene = overlaps$up_overlap, Direction = "Upregulated")
       down <- data.frame(Gene = overlaps$down_overlap, Direction = "Downregulated")
       write.csv(rbind(up, down), file, row.names = FALSE)
-    }
+    })
   )
   
 }
