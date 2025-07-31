@@ -148,8 +148,8 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
     }
   )
   
-  compute_anova_table <- function(filtered_data, selected_genes, group_col, species) {
-    available_genes <- rownames(filtered_data$norm_counts)
+  compute_anova_table <- function(data_list, selected_genes, group_col, species) {
+    available_genes <- rownames(data_list$norm_counts)
     if (is_ensembl_id(available_genes)) {
       symbol_to_ens <- convert_symbol_to_ensembl(selected_genes, species)
       matched_symbols <- names(symbol_to_ens)
@@ -163,10 +163,10 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
       gene_labels <- setNames(found_genes, found_genes)
     }
     
-    expr_mat <- filtered_data$norm_counts[found_genes, , drop = FALSE]
+    expr_mat <- data_list$norm_counts[found_genes, , drop = FALSE]
     expr_df <- as.data.frame(t(expr_mat))
     expr_df$Sample <- rownames(expr_df)
-    df <- cbind(expr_df, filtered_data$samples[rownames(expr_df), , drop = FALSE])
+    df <- cbind(expr_df, data_list$samples[rownames(expr_df), , drop = FALSE])
     
     long_df <- tidyr::pivot_longer(
       df, cols = all_of(found_genes), names_to = "Gene", values_to = "Expression"
@@ -248,7 +248,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
       selected_genes <- selected_genes[selected_genes != ""]
       
       df <- compute_anova_table(
-        filtered_data = filtered_data,
+        data_list = filtered_data,
         selected_genes = selected_genes,
         group_col = input$group_select_geneexpr,
         species = filtered_data$species
