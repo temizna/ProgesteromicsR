@@ -207,7 +207,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
     selected_genes <- selected_genes[selected_genes != ""]
     
     df <- compute_anova_table(
-      filtered_data = filtered_data,
+      data_list = filtered_data,
       selected_genes = selected_genes,
       group_col = input$group_select_geneexpr,
       species = filtered_data_rv()$species
@@ -251,7 +251,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
         data_list = filtered_data,
         selected_genes = selected_genes,
         group_col = input$group_select_geneexpr,
-        species = filtered_data$species
+        species = filtered_data_rv()$species
       )
       
       # Apply same formatting as DT table
