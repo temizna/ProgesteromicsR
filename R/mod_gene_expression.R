@@ -240,6 +240,8 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
       paste0("gene_expression_anova_", Sys.Date(), ".csv")
     },
     content = function(file) {
+      tryCatch({
+        print("Running download handler")
       req(filtered_data_rv(), input$gene_select, input$group_select_geneexpr)
       filtered_data<-filtered_data_rv()
       genes_raw <- input$gene_select
@@ -253,7 +255,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
         group_col = input$group_select_geneexpr,
         species = filtered_data$species
       )
-      
+      print("Writing CSV")
       # Apply same formatting as DT table
       numeric_cols <- sapply(df, is.numeric)
       df[numeric_cols] <- lapply(df[numeric_cols], function(col) {
@@ -261,6 +263,11 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
       })
       print(df)
       write.csv(df, file, row.names = FALSE)
+      print("Download complete")
+      }, error = function(e) {
+        showNotification(paste("Download error:", e$message), type = "error")
+        print(paste("Download error:", e$message))
+      })
     }
   )
   
