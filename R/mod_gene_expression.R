@@ -246,10 +246,10 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
       selected_genes <- selected_genes[selected_genes != ""]
       
       df <- compute_anova_table(
-        filtered_data = filtered_data_rv,
+        filtered_data = filtered_data_rv(),
         selected_genes = selected_genes,
         group_col = input$group_select_geneexpr,
-        species = filtered_data_rv$species
+        species = filtered_data_rv()$species
       )
       
       # Apply same formatting as DT table
