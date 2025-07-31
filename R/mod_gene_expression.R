@@ -234,23 +234,24 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
         fontWeight = "bold"
       )
   })
-  
+ 
   output$download_gene_stats <- downloadHandler(
     filename = function() {
       paste0("gene_expression_anova_", Sys.Date(), ".csv")
     },
     content = function(file) {
       req(filtered_data_rv(), input$gene_select, input$group_select_geneexpr)
+      filtered_data<-filtered_data_rv()
       genes_raw <- input$gene_select
       selected_genes <- unlist(stringr::str_split(genes_raw, "[\\s,]+"))
       selected_genes <- trimws(selected_genes)
       selected_genes <- selected_genes[selected_genes != ""]
       
       df <- compute_anova_table(
-        filtered_data = filtered_data_rv(),
+        filtered_data = filtered_data,
         selected_genes = selected_genes,
         group_col = input$group_select_geneexpr,
-        species = filtered_data_rv()$species
+        species = filtered_data$species
       )
       
       # Apply same formatting as DT table
