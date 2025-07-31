@@ -139,7 +139,7 @@ mod_volcano_ma_plot <- function(input, output, session, res_reactive, filtered_d
     filename = function() { paste0("volcano_plot_", Sys.Date(), ".pdf") },
     content = function(file) {
       pdf(file)
-      req(res_reactive())
+      req(res_reactive(),input$volcano_gene_label,input$volcano_lfc,input$volcano_padj,input$volcano_select)
       res <- res_reactive()
       top_genes <- input$volcano_gene_label
       label_genes <- unlist(stringr::str_split(input$volcano_select, "[\\s,]+"))
@@ -147,7 +147,7 @@ mod_volcano_ma_plot <- function(input, output, session, res_reactive, filtered_d
         label_genes <- convert_ensembl_to_symbol(label_genes, filtered_data_rv()$species)
       }
       p <- generate_volcano_plot(res, input$volcano_lfc, input$volcano_padj, label_genes, top_genes)
-      print(suppressMessages({p}))
+      print(p)
       dev.off()
     }
   )
