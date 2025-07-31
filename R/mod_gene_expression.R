@@ -240,6 +240,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
       paste0("gene_expression_anova_", Sys.Date(), ".csv")
     },
     content = function(file) {
+      req(filtered_data_rv(), input$gene_select, input$group_select_geneexpr)
       genes_raw <- input$gene_select
       selected_genes <- unlist(stringr::str_split(genes_raw, "[\\s,]+"))
       selected_genes <- trimws(selected_genes)
