@@ -129,12 +129,12 @@ mod_pca_cluster_server <- function(input, output, session, filtered_data_rv) {
         gene_pc_df$pc <- as.character(gene_pc_df$pc)
         pcs <- unique(gene_pc_df$pc)
         
-        lines <- lapply(pcs, function(pc) {
+        lines <- unlist(lapply(pcs, function(pc) {
           genes <- gene_pc_df$gene[gene_pc_df$pc == pc]
           paste(c(pc, "PCA gene set", genes), collapse = "\t")
-        })
-        
+        }))
         writeLines(lines, con = file)
+        
       }
     )
     

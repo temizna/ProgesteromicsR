@@ -138,19 +138,31 @@ mod_volcano_ma_plot <- function(input, output, session, res_reactive, filtered_d
   output$download_volcano_plot <- downloadHandler(
     filename = function() { paste0("volcano_plot_", Sys.Date(), ".pdf") },
     content = function(file) {
-      pdf(file)
-      req(res_reactive(),input$volcano_gene_label,input$volcano_lfc,input$volcano_padj,input$volcano_select)
-      res <- res_reactive()
-      top_genes <- input$volcano_gene_label
-      label_genes <- unlist(stringr::str_split(input$volcano_select, "[\\s,]+"))
-      if (is_ensembl_id(res$symbol)) {
-        label_genes <- convert_ensembl_to_symbol(label_genes, filtered_data_rv()$species)
-      }
-      p <- generate_volcano_plot(res,label_genes, top_genes, input$volcano_lfc, input$volcano_padj)
-      print(p)
-      dev.off()
+      tryCatch({
+        message("Starting volcano plot download...")
+        pdf(file)
+        req(res_reactive(), input$volcano_gene_label, input$volcano_lfc, input$volcano_padj, input$volcano_select)
+        res <- res_reactive()
+        top_genes <- input$volcano_gene_label
+        label_genes <- unlist(stringr::str_split(input$volcano_select, "[\\s,]+"))
+        if (is_ensembl_id(res$symbol)) {
+          label_genes <- convert_ensembl_to_symbol(label_genes, filtered_data_rv()$species)
+        }
+        
+        # Convert to numeric explicitly
+        res$padj <- as.numeric(res$padj)
+        res$log2FoldChange <- as.numeric(res$log2FoldChange)
+        p <- generate_volcano_plot(res, label_genes, top_genes, input$volcano_lfc, input$volcano_padj)
+        print(p)
+        dev.off()
+        message("Download complete.")
+      }, error = function(e) {
+        message("Download error: ", e$message)
+        showNotification(paste("Download error:", e$message), type = "error")
+      })
     }
   )
+  
   
   # MA Plot Download Handler
   output$download_ma_plot <- downloadHandler(

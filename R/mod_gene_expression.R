@@ -241,7 +241,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
     },
     content = function(file) {
       tryCatch({
-      print("Running download handler")
+      #print("Running download handler")
         fd <- isolate(filtered_data_rv())
         genes_raw <- isolate(input$gene_select)
         group <- isolate(input$group_select_geneexpr)
@@ -251,7 +251,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
         selected_genes <- trimws(selected_genes)
         selected_genes <- selected_genes[selected_genes != ""]
         
-        print(fd$species)
+        #print(fd$species)
         
         df <- compute_anova_table(
           data_list = fd,
@@ -262,7 +262,7 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
       selected_genes <- unlist(stringr::str_split(genes_raw, "[\\s,]+"))
       selected_genes <- trimws(selected_genes)
       selected_genes <- selected_genes[selected_genes != ""]
-      print(fd$species)
+      #print(fd$species)
       df <- compute_anova_table(
         data_list = fd,
         selected_genes = selected_genes,
@@ -275,9 +275,9 @@ mod_gene_expression_plot <- function(input, output, session, filtered_data_rv) {
       df[numeric_cols] <- lapply(df[numeric_cols], function(col) {
         ifelse(abs(col) < 0.001, formatC(col, format = "e", digits = 2), round(col, 3))
       })
-      print(df)
+     # print(df)
       write.csv(df, file, row.names = FALSE)
-      print("Download complete")
+     # print("Download complete")
       }, error = function(e) {
         showNotification(paste("Download error:", e$message), type = "error")
         print(paste("Download error:", e$message))

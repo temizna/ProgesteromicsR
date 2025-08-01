@@ -1,6 +1,6 @@
 ui <- fluidPage(
   theme = shinythemes::shinytheme("readable"),
-  titlePanel("ProgesteromicsR: An R Shiny App to Analyze breast cancer cell line RNASeq data"),
+  titlePanel("ProgesteromicsR: An R Shiny App to Analyze Breast Cancer Cell Line RNASeq data"),
   tabsetPanel(
     tabPanel("Home",
              mainPanel(
