@@ -1,6 +1,6 @@
 ui <- fluidPage(
   theme = shinythemes::shinytheme("readable"),
-  titlePanel("ProgesteromicsR: An R Shiny App to Analyze Breast Cancer Cell Line RNASeq data"),
+  titlePanel("ProgesteromicsR: An R Shiny App to Analyze Breast Cancer Cell Line RNASeq Data"),
   tabsetPanel(
     tabPanel("Home",
              mainPanel(
@@ -141,7 +141,7 @@ ui <- fluidPage(
                )
              )
     ),
-    tabPanel("GSEA",
+    tabPanel("GSEA Analysis",
              sidebarLayout(
                sidebarPanel(
                  checkboxInput("gsea_split_dotplot", "Split Dot Plot by Activation State", value = TRUE),
@@ -220,7 +220,7 @@ ui <- fluidPage(
                )
              )
     ),
-    tabPanel("Non-overlap Genes Pathway Analysis", 
+    tabPanel("Non-overlapping Genes Pathway Analysis", 
              sidebarLayout(
                sidebarPanel(
                  actionButton("run_non_overlap_pathway", "Run Non Overlap Pathway Analysis"),
