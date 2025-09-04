@@ -1,6 +1,6 @@
 Package: ProgesteromicsR 
 Title: A Comprehensive Shiny App for RNA-Seq Analysis of 219 breast cancer cell lines
-Version: 0.5.0
+Version: 0.8.1
 Authors@R: 
     person(Nuri Alpay, Temiz, email = temizna@umn.edu, role = c("aut", "cre"))
 Description: 
@@ -88,6 +88,9 @@ VignetteBuilder: knitr
 - **GSEA (Gene Set Enrichment Analysis)**  
   - Supports MSigDB collections: Hallmark, GO, KEGG, Reactome, Cancer Cell Atlas, Cancer Modules, Txn factor Targets  
   - Dot plots, enrichment plot, upset plot  and enrichment tables
+- **ssGSVA/GSSA (Gene Set Variation Analysis)**
+  - Supports MSigDB collections: Hallmark, GO, KEGG, Reactome, Cancer Cell Atlas, Cancer Modules, Txn factor Targets
+  - Dot plots, single sample heatmap  and enrichment tables
 - **Non-overlap Pathway Analysis**
   - Overlapping genes from the initial selected pathway analysis is removed and same pathway analysis is re-run. 
   - Visualizations: Dot, tree, heatmap plots and pathway tables 
@@ -116,11 +119,12 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 
 # Install required Bioconductor packages
 BiocManager::install(c(
-  "DESeq2", "GEOquery", "Biobase", "clusterProfiler", "enrichplot",
-  "ComplexHeatmap", "msigdbr", "ReactomePA", "pathview",
+  "DESeq2", "GEOquery", "Biobase", "clusterProfiler", "enrichplot","BiocParallel",
+  "ComplexHeatmap", "msigdbr", "ReactomePA", "pathview","GSEABase", "GSVA","SummerizedExperiment","limma",
   "org.Hs.eg.db", "org.Mm.eg.db", "AnnotationDbi"
 ))
-
+```
+```r
 #install devtools if not already installed
 install.packages("devtools")
 library("devtools")
@@ -141,6 +145,7 @@ This will open the app in your default web browser.
 
 ## 📂 File Requirements
 Pre-loaded data. The data is normalized as below:
+```r
 countData <- read.csv(paste(datadir,"subread_counts_gene_symbol2.csv",sep=""), row.names=1,check.names = F)
 coldata<-read.csv(paste(datadir,"design_stemshiny.csv",sep=""),header=T, row.names = 1,check.names = F)
 countData2<-countData
@@ -163,7 +168,7 @@ norm_data<-assay(norm_data_vst)
 save(adjusted, metadata, norm_data, file = "inst/extdata/processed_cellline_data.rda")
 saveRDS(dds, file = "inst/extdata/processed_dds.rds", compress = "xz")
 ## 🛠 Development
-
+```
 All modules are structured as reusable Shiny modules. Additional features can be added easily. Utility functions are separated into a `utils.R` file.
 
 To ensure all required Bioconductor packages are installed:

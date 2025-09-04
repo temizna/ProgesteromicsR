@@ -10,7 +10,6 @@
 #' @param kegg_pathway_results ReactiveVal for KEGG pathway analysis result
 #' @param d1_merged_rv Reactive Data frame containing gene symbols, logFC, and padj
 #' @param res_reactive ReactiveVal holding DESeq2 results
-#' @param pathway_input_rv Reactive pathfindR input data frame
 #' @param pathway_result_rv Reactive pathway result data frame
 #' @importFrom utils head read.csv write.csv str
 #' @importFrom stats as.formula dist model.matrix prcomp quantile relevel var cor na.omit
@@ -23,7 +22,7 @@
 #' @importFrom shinythemes shinytheme
 #' @importFrom DOSE enrichDO
 #' @export
-mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_reactive, geneList_rv, kegg_pathway_results, d1_merged_rv, pathway_input_rv, pathway_result_rv) {
+mod_pathway_analysis <- function(input, output, session, filtered_data_rv, res_reactive, geneList_rv, kegg_pathway_results, d1_merged_rv, pathway_result_rv) {
 
   observeEvent(input$run_pathway, {
     req(filtered_data_rv())

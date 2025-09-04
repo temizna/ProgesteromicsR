@@ -19,14 +19,28 @@ top_de_genes<-reactiveVal()
 pathway_result_rv <-reactiveVal()
 # Register module
 load_preloaded_data(input, output, session, loaded_data_rv, dds_rv)
-mod_sample_select(input, output, session, dds_rv,loaded_data_rv, filtered_data_rv, filtered_dds_rv)
+mod_sample_select(
+  input, output, session,
+  dds_rv            = dds_rv,
+  loaded_data_rv    = loaded_data_rv,
+  filtered_data_rv  = filtered_data_rv,
+  filtered_dds_rv   = filtered_dds_rv
+)
 mod_gene_expression_plot(input, output, session,filtered_data_rv)
 mod_qc_plot(input, output, session, filtered_data_rv)
 mod_differential_expression(input, output, session, filtered_data_rv, filtered_dds_rv, res_reactive)
 mod_volcano_ma_plot(input, output, session, res_reactive, filtered_data_rv)
 mod_cross_plot(input, output, session, filtered_data_rv,filtered_dds_rv)
-mod_pathway_analysis(input, output, session, filtered_data_rv, res_reactive, geneList_rv, pathway_input_rv, kegg_pathway_results, d1_merged_rv, pathway_result_rv)
+mod_pathway_analysis(input, output, session, filtered_data_rv, res_reactive, geneList_rv, kegg_pathway_results, d1_merged_rv, pathway_result_rv)
 mod_gsea_analysis(input, output, session, filtered_data_rv, res_reactive)
+mod_gsva_server(
+  id = "gsva",
+  dds_rv = filtered_dds_rv,
+  filtered_data_rv = filtered_data_rv,
+  group_var_react  = NULL,
+  ref_level_react  = NULL,
+  test_level_react = NULL
+)
 # In your main server function, call the `mod_depmaps_server` like so:
 mod_cancer_gene_census(input, output, session, res_reactive)
 mod_pathway_analysis_non_overlap(input, output, session, geneList_rv, filtered_data_rv, pathway_result_rv, res_reactive,geneListU_rv)
@@ -34,6 +48,7 @@ mod_tf_enrichment_analysis(input, output, session,res_reactive,filtered_data_rv)
 mod_logger_server("logger", input_all = input)
 mod_pca_cluster_server(input, output, session, filtered_data_rv)
 mod_goi_heatmap(input, output, session, filtered_data_rv)
+# after you create filtered_data_rv, dds_rv, and pathway_result_rv
 onStop(function() {
     cat("Shiny app is closing cleanly...\n")
     stopApp()

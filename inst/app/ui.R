@@ -172,6 +172,8 @@ ui <- fluidPage(
                )
              )
     ),
+    # ---- GSVA / ssGSEA (module returns plain UI -> wrap) ----
+    shiny::tabPanel("GSVA / ssGSVA", mod_gsva_ui("gsva")),
     tabPanel("Pathway Analysis", 
              sidebarLayout(
                sidebarPanel(
